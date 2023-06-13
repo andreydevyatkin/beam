@@ -48,4 +48,4 @@ jobs:
         with:
           cache-read-only: false
       - name: run typescriptPreCommit script
-          run: ./gradlew :typescriptPreCommit
+        run: ./gradlew :typescriptPreCommit
