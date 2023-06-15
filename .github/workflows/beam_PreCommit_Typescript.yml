@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# To learn more about GitHub Actions in Apache Beam check the CI.md
-
 name: beam_PreCommit_Typescript
 
 on:

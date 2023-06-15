@@ -30,9 +30,10 @@ import {
 } from './inspector/InteractiveInspectorWidget';
 
 namespace CommandIDs {
-  export const open_inspector = 'apache-beam-jupyterlab-sidepanel:open_inspector' ;
-  export const open_clusters_panel = 'apache-beam-jupyterlab-sidepanel:open_clusters_panel';
-
+  export const open_inspector =
+      'apache-beam-jupyterlab-sidepanel:open_inspector';
+  export const open_clusters_panel =
+      'apache-beam-jupyterlab-sidepanel:open_clusters_panel';
 }
 
 /**
