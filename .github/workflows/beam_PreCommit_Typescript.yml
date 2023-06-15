@@ -21,10 +21,10 @@ name: beam_PreCommit_Typescript
 
 on:
   push:
-#    tags: ['v*']
-    branches: ['**']
+    tags: ['v*']
+    branches: ['master', 'release-*']
   pull_request:
-    branches: ['**']
+    branches: ['master', 'release-*']
     paths: ['sdks/python/apache_beam/runners/interactive/extensions/**']
   issue_comment:
     types: [created]
