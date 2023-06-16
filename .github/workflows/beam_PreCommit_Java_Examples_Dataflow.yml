@@ -32,6 +32,26 @@ on:
     - cron: '* */6 * * *'
 
 jobs:
+  check_gcp_variables:
+    timeout-minutes: 5
+    name: "Check GCP variables set"
+    runs-on: ubuntu-latest
+    outputs:
+      gcp-variables-set: ${{ steps.check_gcp_variables.outputs.gcp-variables-set }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: "Check are GCP variables set"
+        run: "./scripts/ci/ci_check_are_gcp_variables_set.sh"
+        id: check_gcp_variables
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_SA_EMAIL: ${{ secrets.GCP_SA_EMAIL }}
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GCP_TESTING_BUCKET: ${{ secrets.GCP_TESTING_BUCKET }}
+          GCP_REGION: "not-needed-here"
+          GCP_PYTHON_WHEELS_BUCKET: "not-needed-here"
+
   beam_PreCommit_Java_Examples_Dataflow:
     if: ${{github.event.issue.pull_request}} || ${{github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'}} || ${{github.event.schedule}}
     runs-on: [self-hosted, ubuntu-20.04]
