@@ -50,3 +50,8 @@ jobs:
           cache-read-only: false
       - name: run javaExamplesDataflowPrecommit script
         run: ./gradlew :javaExamplesDataflowPrecommit -PdisableSpotlessCheck=true -PdisableCheckStyle=true
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: java-code-coverage-report
+          path: "**/build/test-results/**/*.xml"
