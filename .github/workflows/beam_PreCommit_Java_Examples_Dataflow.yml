@@ -35,7 +35,7 @@ jobs:
   check_gcp_variables:
     timeout-minutes: 5
     name: "Check GCP variables set"
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, ubuntu-20.04]
     outputs:
       gcp-variables-set: ${{ steps.check_gcp_variables.outputs.gcp-variables-set }}
     steps:
@@ -68,6 +68,13 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           cache-read-only: false
+      - name: Authenticate on GCP
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
       - name: run javaExamplesDataflowPrecommit script
         run: ./gradlew :javaExamplesDataflowPrecommit -PdisableSpotlessCheck=true -PdisableCheckStyle=true
       - name: Archive code coverage results
