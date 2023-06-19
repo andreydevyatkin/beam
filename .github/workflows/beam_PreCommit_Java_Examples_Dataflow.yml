@@ -22,7 +22,7 @@ on:
     tags: ['v*']
     branches: ['master', 'release-*']
     paths: ['model/**', 'sdks/java/**', 'runners/google-cloud-dataflow-java/**', 'examples/java/**', 'examples/kotlin/**', 'release/**']
-  pull_request:
+  pull_request_target:
     tags: ['v*']
     branches: ['master', 'release-*']
     paths: ['model/**', 'sdks/java/**', 'runners/google-cloud-dataflow-java/**', 'examples/java/**', 'examples/kotlin/**', 'release/**']
