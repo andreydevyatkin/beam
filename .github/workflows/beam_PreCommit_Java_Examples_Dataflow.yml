@@ -79,7 +79,7 @@ jobs:
           export_default_credentials: true
       - name: run javaExamplesDataflowPrecommit script
         run: ./gradlew :javaExamplesDataflowPrecommit
-          -DintegrationTestPipelineOptions=["--runner=DataflowRunner","--project=${{ secrets.GCP_PROJECT_ID }}","--tempRoot=gs://${{ secrets.GCP_TESTING_BUCKET }}/tmp/"]
+          -DintegrationTestPipelineOptions=["--tempRoot=gs://${{ secrets.GCP_TESTING_BUCKET }}/tmp/"]
           -DintegrationTestRunner=dataflow
           -PdisableSpotlessCheck=true
           -PdisableCheckStyle=true
