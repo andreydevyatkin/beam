@@ -80,7 +80,6 @@ jobs:
       - name: run javaExamplesDataflowPrecommit script
         run: ./gradlew :javaExamplesDataflowPrecommit
           -DintegrationTestPipelineOptions=["--tempRoot=gs://${{ secrets.GCP_TESTING_BUCKET }}/tmp/"]
-          -DintegrationTestRunner=dataflow
           -PdisableSpotlessCheck=true
           -PdisableCheckStyle=true
       - name: Archive code coverage results
