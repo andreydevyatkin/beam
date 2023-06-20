@@ -35,7 +35,7 @@ jobs:
   check_gcp_variables:
     timeout-minutes: 5
     name: "Check GCP variables set"
-    runs-on: [self-hosted, ubuntu-20.04]
+    runs-on: [self-hosted, macOS]
     outputs:
       gcp-variables-set: ${{ steps.check_gcp_variables.outputs.gcp-variables-set }}
     steps:
@@ -56,7 +56,7 @@ jobs:
     needs:
       - check_gcp_variables
     if: ${{github.event.issue.pull_request}} || ${{github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'}} || ${{github.event.schedule}}
-    runs-on: [self-hosted, ubuntu-20.04]
+    runs-on: [self-hosted, macOS]
     name: beam_PreCommit_Java_Examples_Dataflow
     steps:
       - name: Git checkout
