@@ -79,7 +79,6 @@ jobs:
           export_default_credentials: true
       - name: run javaExamplesDataflowPrecommit script
         run: ./gradlew :javaExamplesDataflowPrecommit
-          -DintegrationTestPipelineOptions=["--tempRoot=gs://${{ secrets.GCP_TESTING_BUCKET }}/tmp/"]
           -PdisableSpotlessCheck=true
           -PdisableCheckStyle=true
       - name: Archive code coverage results
