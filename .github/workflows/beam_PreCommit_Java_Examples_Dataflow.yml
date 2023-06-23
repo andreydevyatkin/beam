@@ -22,7 +22,7 @@ on:
     tags: ['v*']
     branches: ['master', 'release-*']
     paths: ['model/**', 'sdks/java/**', 'runners/google-cloud-dataflow-java/**', 'examples/java/**', 'examples/kotlin/**', 'release/**']
-  pull_request:
+  pull_request_target:
     tags: ['v*']
     branches: ['master', 'release-*']
     paths: ['model/**', 'sdks/java/**', 'runners/google-cloud-dataflow-java/**', 'examples/java/**', 'examples/kotlin/**', 'release/**']
@@ -64,7 +64,7 @@ jobs:
           [self-hosted, ubuntu-20.04],
 #          [self-hosted, windows-latest]
         ]
-    if: ${{github.event.issue.pull_request}} || ${{github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'}} || ${{github.event.schedule}}
+    if: ${{github.event.issue.pull_request_target}} || ${{github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'}} || ${{github.event.schedule}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
