@@ -31,6 +31,7 @@ on:
   schedule:
     - cron: '* */6 * * *'
 
+permissions: read-all
 jobs:
   check_gcp_variables:
     timeout-minutes: 5
@@ -39,8 +40,10 @@ jobs:
     outputs:
       gcp-variables-set: ${{ steps.check_gcp_variables.outputs.gcp-variables-set }}
     steps:
-      - name: Check out code
+      - name: Check out repository code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: "Check are GCP variables set"
         run: "./scripts/ci/ci_check_are_gcp_variables_set.sh"
         id: check_gcp_variables
@@ -66,8 +69,10 @@ jobs:
         ]
     if: ${{github.event.issue.pull_request_target}} || ${{github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'}} || ${{github.event.schedule}}
     steps:
-      - name: Checkout code
+      - name: Check out repository code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup self-hosted
         uses: ./.github/actions/setup-self-hosted-action
         with:
