@@ -67,7 +67,7 @@ jobs:
           [self-hosted, ubuntu-20.04],
 #          [self-hosted, windows-latest]
         ]
-    if: ${{github.event.issue.pull_request_target}} || ${{github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'}} || ${{github.event.schedule}}
+    if: ${{github.event.issue.pull_request_target || github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit' || github.event.schedule}}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
