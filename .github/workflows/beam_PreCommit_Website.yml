@@ -34,9 +34,6 @@ jobs:
     runs-on: [self-hosted, ubuntu-20.04]
     name: beam_PreCommit_Website
     timeout-minutes: 120
-    strategy:
-      matrix:
-        instance: [1,2,3,4,5,6,7,8,9,10]
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -50,4 +47,4 @@ jobs:
         with:
           cache-read-only: false
       - name: run websitePreCommit script
-        run: echo ${{matrix.instance}} && ./gradlew :websitePreCommit
+        run: ./gradlew :websitePreCommit
