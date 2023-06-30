@@ -15,13 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-name: beam_PreCommit_Typescript
+name: PreCommit Typescript
 
 on:
   push:
     tags: ['v*']
     branches: ['master', 'release-*']
-  pull_request:
+    paths: ['sdks/python/apache_beam/runners/interactive/extensions/**']
+  pull_request_target:
     branches: ['master', 'release-*']
     paths: ['sdks/python/apache_beam/runners/interactive/extensions/**']
   issue_comment:
@@ -29,14 +30,21 @@ on:
   schedule:
     - cron: '* */6 * * *'
 
+permissions: read-all
 jobs:
   beam_PreCommit_Typescript:
-    if: ${{github.event.issue.pull_request}} || ${{github.event.comment.body == 'Run Typescript PreCommit'}} || ${{github.event.schedule}}
-    runs-on: [self-hosted]
     name: beam_PreCommit_Typescript
+    runs-on: [self-hosted, ubuntu-20.04]
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request_target' ||
+      github.event_name == 'schedule' ||
+      github.event.comment.body == 'Run Typescript PreCommit'   
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Install Python
         uses: actions/setup-python@v4
         with:

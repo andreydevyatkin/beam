@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-name: beam_PreCommit_Java_Examples_Dataflow
+name: PreCommit Java Examples Dataflow
 
 on:
   push:
@@ -34,7 +34,7 @@ permissions: read-all
 jobs:
   check_gcp_variables:
     timeout-minutes: 5
-    name: "Check GCP variables set"
+    name: check_gcp_variables
     runs-on: [self-hosted, ubuntu-20.04]
     outputs:
       gcp-variables-set: ${{ steps.check_gcp_variables.outputs.gcp-variables-set }}
@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: "Check are GCP variables set"
+      - name: Check are GCP variables set
         run: "./scripts/ci/ci_check_are_gcp_variables_set.sh"
         id: check_gcp_variables
         env:
@@ -55,7 +55,7 @@ jobs:
           GCP_PYTHON_WHEELS_BUCKET: "not-needed-here"
 
   beam_PreCommit_Java_Examples_Dataflow:
-    name: 'Java Examples Dataflow'
+    name: beam_PreCommit_Java_Examples_Dataflow
     needs:
       - check_gcp_variables
     runs-on: [self-hosted, ubuntu-20.04]
@@ -66,11 +66,6 @@ jobs:
       github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'
     steps:
       - name: Check out repository code
-        if: |
-          github.event_name == 'push' ||
-          github.event_name == 'pull_request_target' ||
-          github.event_name == 'schedule' ||
-          github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}

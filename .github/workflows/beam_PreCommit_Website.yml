@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: beam_PreCommit_Website
+name: PreCommit Website
 
 on:
   push:
     tags: ['v*']
     branches: ['master', 'release-*']
     paths: ['website/**']
-  pull_request:
+  pull_request_target:
     branches: ['master', 'release-*']
     paths: ['website/**']
   issue_comment:
@@ -28,15 +28,22 @@ on:
   schedule:
     - cron: '* */6 * * *'
 
+permissions: read-all
 jobs:
   beam_PreCommit_Website:
-    if: ${{github.event.issue.pull_request}} || ${{github.event.comment.body == 'Run Website PreCommit'}} || ${{github.event.schedule}}
-    runs-on: [self-hosted, ubuntu-20.04]
     name: beam_PreCommit_Website
     timeout-minutes: 120
+    runs-on: [self-hosted, ubuntu-20.04]
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request_target' ||
+      github.event_name == 'schedule' ||
+      github.event.comment.body == 'Run Website PreCommit'
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Install Java
         uses: actions/setup-java@v3.8.0
         with:
