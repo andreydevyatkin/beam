@@ -23,7 +23,6 @@ on:
     branches: ['master', 'release-*']
     paths: ['model/**', 'sdks/java/**', 'runners/google-cloud-dataflow-java/**', 'examples/java/**', 'examples/kotlin/**', 'release/**']
   pull_request_target:
-    tags: ['v*']
     branches: ['master', 'release-*']
     paths: ['model/**', 'sdks/java/**', 'runners/google-cloud-dataflow-java/**', 'examples/java/**', 'examples/kotlin/**', 'release/**']
   issue_comment:
@@ -59,26 +58,19 @@ jobs:
     name: 'Java Examples Dataflow'
     needs:
       - check_gcp_variables
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [
-          [self-hosted, ubuntu-20.04],
-#          [self-hosted, windows-latest]
-        ]
+    runs-on: [self-hosted, ubuntu-20.04]
     if: |
-      github.event_name == 'push'
-      || github.event_name == 'pull_request_target'
-      || github.event_name == 'schedule'
-      || github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request_target' ||
+      github.event_name == 'schedule' ||
+      github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'
     steps:
       - name: Check out repository code
         if: |
-          github.event_name == 'push'
-          || github.event_name == 'pull_request_target'
-          || github.event_name == 'schedule'
-          || github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'
+          github.event_name == 'push' ||
+          github.event_name == 'pull_request_target' ||
+          github.event_name == 'schedule' ||
+          github.event.comment.body == 'Run Java_Examples_Dataflow PreCommit'
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
