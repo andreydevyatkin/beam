@@ -29,15 +29,15 @@ on:
       - 'examples/kotlin/**'
       - 'release/**'
       - '.github/workflows/beam_PreCommit_Java_Examples_Dataflow.yml'
-  #pull_request_target:
-  #  branches: ['master', 'release-*']
-  #  paths:
-  #    - 'model/**'
-  #    - 'sdks/java/**'
-  #    - 'runners/google-cloud-dataflow-java/**'
-  #    - 'examples/java/**'
-  #    - 'examples/kotlin/**'
-  #    - 'release/**'
+  pull_request_target:
+   branches: ['master', 'release-*']
+   paths:
+     - 'model/**'
+     - 'sdks/java/**'
+     - 'runners/google-cloud-dataflow-java/**'
+     - 'examples/java/**'
+     - 'examples/kotlin/**'
+     - 'release/**'
   issue_comment:
     types: [created]
   schedule:
@@ -61,7 +61,7 @@ permissions:
 jobs:
   beam_PreCommit_Java_Examples_Dataflow:
     name: beam_PreCommit_Java_Examples_Dataflow
-    runs-on: [self-hosted, ubuntu-20.04]
+    runs-on: [self-hosted, ubuntu-20.04, main]
     if: |
       github.event_name == 'push' ||
       github.event_name == 'pull_request_target' ||
