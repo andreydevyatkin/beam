@@ -94,3 +94,5 @@ Syncing js/section-nav.js to /
 ```
 
 If the change does not appear in the browser, even after a hard refresh, try disabling the cache. For example, to disable the cache in Chrome, open dev tools, select the Network tab, and check the box labeled "Disable cache".
+
+test
