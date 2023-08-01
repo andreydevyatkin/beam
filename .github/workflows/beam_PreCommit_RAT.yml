@@ -53,7 +53,9 @@ jobs:
     name: beam_PreCommit_RAT (Run RAT PreCommit)
     runs-on: [self-hosted, ubuntu-20.04, main]
     timeout-minutes: 120
-    needs: []
+    strategy:
+      matrix:
+        skip_checkout: []
     if: |
       github.event_name == 'push' ||
       github.event_name == 'pull_request_target' ||
