@@ -62,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Check out repository code
-        uses: ./.github/actions/checkout-action
+        uses: ./.github/actions/checkout
         with:
           comment_phrase: 'Run RAT PreCommit'
       - name: Rerun on comment
