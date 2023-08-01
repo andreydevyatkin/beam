@@ -16,7 +16,7 @@
 # under the License.
 
 name: 'Check out repository code'
-description: 'Check out repository code based on trigger event'
+description: 'Check out repository code based on trigger event and comment phrase'
 inputs:
   comment_phrase:
     description: "The comment phrase in the PR"
