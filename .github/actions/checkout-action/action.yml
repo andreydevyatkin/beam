@@ -31,7 +31,7 @@ runs:
       if: contains(fromJSON('["push", "pull_request_target", "schedule", "workflow_dispatch"]'), ${{ github.event_name }})
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-    - name: Check out if comment
+    - name: Check out if comment phrase
       uses: actions/checkout@v3
       if: ${{ github.event.comment.body }} == ${{ inputs.comment_phrase }}
       with:

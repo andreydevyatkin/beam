@@ -61,7 +61,7 @@ jobs:
       github.event.comment.body == 'Run RAT PreCommit'
     steps:
       - name: Check out repository code
-        uses: ./.github/actions/checkout
+        uses: ./.github/actions/checkout-action
         with:
           comment_phrase: 'Run RAT PreCommit'
       - name: Rerun on comment
