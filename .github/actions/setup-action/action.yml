@@ -37,7 +37,7 @@ runs:
         ref: ${{ github.event.pull_request.head.sha }}
     - name: Check out if comment phrase
       uses: actions/checkout@v3
-      working-directory: .
+      working-directory: ./
       if: ${{ github.event.comment.body == inputs.comment_phrase }}
       with:
         ref: refs/pull/${{ github.event.issue.number }}/head
