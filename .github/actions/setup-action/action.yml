@@ -28,7 +28,11 @@ runs:
   steps:
     - name: Check out
       uses: actions/checkout@v3
-      if: contains(fromJSON('["push", "pull_request_target", "schedule", "workflow_dispatch"]'), ${{ github.event_name }})
+      if: |
+        github.event_name == 'push' ||
+        github.event_name == 'pull_request_target' ||
+        github.event_name == 'schedule' ||
+        github.event_name == 'workflow_dispatch'
       with:
         ref: ${{ github.event.pull_request.head.sha }}
     - name: Check out if comment phrase

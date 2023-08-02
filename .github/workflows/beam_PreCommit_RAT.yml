@@ -61,7 +61,7 @@ jobs:
       github.event.comment.body == 'Run RAT PreCommit'
     steps:
       - uses: actions/checkout@v3
-      - name: Check out repository code
+      - name: Setup
         uses: ./.github/actions/setup-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
