@@ -53,9 +53,6 @@ jobs:
     name: beam_PreCommit_RAT (Run RAT PreCommit)
     runs-on: [self-hosted, ubuntu-20.04, main]
     timeout-minutes: 120
-    strategy:
-      matrix:
-        skip_checkout: []
     if: |
       github.event_name == 'push' ||
       github.event_name == 'pull_request_target' ||
@@ -63,19 +60,11 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       github.event.comment.body == 'Run RAT PreCommit'
     steps:
+      - uses: actions/checkout@v3
       - name: Check out repository code
         uses: ./.github/actions/checkout
         with:
           comment_phrase: 'Run RAT PreCommit'
-      - name: Rerun on comment
-        if: github.event.comment.body == 'Run RAT PreCommit'
-        uses: ./.github/actions/rerun-job-action
-        with:
-          pull_request_url: ${{ github.event.issue.pull_request.url }}
-          github_repository: ${{ github.repository }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          github_job: ${{ github.job }}
-          github_current_run_id: ${{ github.run_id }}
       - name: Install Java
         uses: actions/setup-java@v3.8.0
         with:

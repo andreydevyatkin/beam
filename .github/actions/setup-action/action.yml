@@ -15,8 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-name: 'Check out repository code'
-description: 'Check out repository code based on trigger event and comment phrase'
+name: 'Setup action'
+description: 'Setup repository and configure the required steps'
 inputs:
   comment_phrase:
     description: "The comment phrase in the PR"
@@ -31,8 +31,17 @@ runs:
       if: contains(fromJSON('["push", "pull_request_target", "schedule", "workflow_dispatch"]'), ${{ github.event_name }})
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-    # - name: Check out if comment phrase
-    #   uses: actions/checkout@v3
-    #   if: contains(fromJSON('["${{ inputs.comment_phrase }}"]'), ${{ github.event.comment.body }})
-    #   with:
-    #     ref: refs/pull/${{ github.event.issue.number }}/head
+    - name: Check out if comment phrase
+      uses: actions/checkout@v3
+      if: github.event.comment.body == inputs.comment_phrase
+      with:
+        ref: refs/pull/${{ github.event.issue.number }}/head
+    - name: Rerun on comment
+      if: github.event.comment.body == inputs.comment_phrase
+      uses: ./.github/actions/rerun-job-action
+      with:
+        pull_request_url: ${{ github.event.issue.pull_request.url }}
+        github_repository: ${{ github.repository }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_job: ${{ github.job }}
+        github_current_run_id: ${{ github.run_id }}
