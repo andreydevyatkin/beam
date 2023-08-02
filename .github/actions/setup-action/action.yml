@@ -40,6 +40,7 @@ runs:
       if: ${{ github.event.comment.body == inputs.comment_phrase }}
       with:
         ref: refs/pull/${{ github.event.issue.number }}/head
+        path: ${{ env.GITHUB_WORKSPACE }}
     - name: Rerun on comment
       if: ${{ github.event.comment.body == inputs.comment_phrase }}
       uses: ./.github/actions/rerun-job-action

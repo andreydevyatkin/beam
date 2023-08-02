@@ -61,10 +61,11 @@ jobs:
       github.event.comment.body == 'Run RAT PreCommit'
     steps:
       - uses: actions/checkout@v3
-      - name: Setup
+      - name: Setup repository
         uses: ./.github/actions/setup-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}
         with:
           comment_phrase: 'Run RAT PreCommit'
       - name: Install Java
