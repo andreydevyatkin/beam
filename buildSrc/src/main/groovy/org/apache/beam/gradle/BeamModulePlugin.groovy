@@ -1230,6 +1230,9 @@ class BeamModulePlugin implements Plugin<Project> {
               )
               )
         }
+        reports {
+          xml.required = true
+        }
       }
 
 
