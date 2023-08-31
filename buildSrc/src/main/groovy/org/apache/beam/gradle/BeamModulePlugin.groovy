@@ -1217,6 +1217,9 @@ class BeamModulePlugin implements Plugin<Project> {
       project.test {
         jacoco {
           excludes = jacocoExcludes
+          reports {
+            xml.enabled = true
+          }
         }
       }
 
@@ -1229,9 +1232,6 @@ class BeamModulePlugin implements Plugin<Project> {
               )
               )
               )
-        }
-        reports {
-          xml.required = true
         }
       }
 
