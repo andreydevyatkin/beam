@@ -1233,10 +1233,8 @@ class BeamModulePlugin implements Plugin<Project> {
               )
         }
         reports {
-          xml {
-            enabled true
-          }
-          xml.destination "build/reports/myReport.xml"
+          xml.required = true
+          xml.outputLocation = "build/reports/myReport.xml"
         }
       }
 
