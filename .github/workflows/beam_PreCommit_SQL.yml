@@ -93,7 +93,7 @@ jobs:
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
             -PenableJacocoReport \
-      - name: Build and Test
+      - name: Generate JaCoCo XML Report
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
           gradle-command: jacocoTestReport
