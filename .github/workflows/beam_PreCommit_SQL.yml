@@ -107,11 +107,11 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Jacoco Results
-          path: 'build/reports/myReport.xml'
+          path: 'build/reports/*.xml'
       - name: JaCoCo Code Coverage Report
         id: jacoco_reporter
         if: always()
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: 'build/reports/myReport.xml'
+          coverage_results_path: 'build/reports/*.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
