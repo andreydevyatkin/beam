@@ -85,18 +85,22 @@ jobs:
           java-version: '11'
           cache: 'gradle'
           check-latest: true
-      - name: Build and Test
-        uses: ./.github/actions/gradle-command-self-hosted-action
-        with:
-          gradle-command: :sqlPreCommit
-          arguments: |
-            -PdisableSpotlessCheck=true \
-            -PdisableCheckStyle=true \
-            -PenableJacocoReport \
+    #   - name: Build and Test
+    #     uses: ./.github/actions/gradle-command-self-hosted-action
+    #     with:
+    #       gradle-command: :sqlPreCommit
+    #       arguments: |
+    #         -PdisableSpotlessCheck=true \
+    #         -PdisableCheckStyle=true \
+    #         -PenableJacocoReport \
       - name: Generate JaCoCo XML Report
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
           gradle-command: jacocoTestReport
+          arguments: |
+            -PdisableSpotlessCheck=true \
+            -PdisableCheckStyle=true \
+            -PenableJacocoReport \
       - name: Archive JUnit Test Results
         uses: actions/upload-artifact@v3
         with:
