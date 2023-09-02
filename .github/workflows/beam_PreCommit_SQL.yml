@@ -93,6 +93,10 @@ jobs:
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
             -PenableJacocoReport \
+      - name: Generate JaCoCo XML Report
+        uses: ./.github/actions/gradle-command-self-hosted-action
+        with:
+          gradle-command: jacocoTestReport
       - name: Archive JUnit Test Results
         uses: actions/upload-artifact@v3
         with:
@@ -105,13 +109,14 @@ jobs:
           path: '**/build/reports/spotbugs/*.html'
       - name: Archive Jacoco Results
         uses: actions/upload-artifact@v2
+        if: always()
         with:
           name: Jacoco Results
-          path: 'build/reports/*.xml'
+          path: '**/build/reports/jacoco/**/*.xml'
       - name: JaCoCo Code Coverage Report
         id: jacoco_reporter
         if: always()
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: 'build/reports/*.xml'
+          coverage_results_path: '**/build/reports/jacoco/**/*.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
