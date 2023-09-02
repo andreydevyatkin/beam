@@ -1221,13 +1221,6 @@ class BeamModulePlugin implements Plugin<Project> {
       ]
 
       project.test {
-      //   if (project.rootProject.findProperty("container-architecture-list") != null) {
-      //   def containerArchitectures = project.rootProject.findProperty("container-architecture-list").split(',')
-      //   if (containerArchitectures.size() > 1 && !project.rootProject.hasProperty("push-containers")) {
-      //     throw new GradleException("A multi-arch image can't be saved in the local image store, please append the -Ppush-containers flag and specify a repository to push in the -Pdocker-repository-root flag.");
-      //   }
-      //   return containerArchitectures
-      // }
         jacoco {
           excludes = jacocoExcludes
           includes = jacocoIncludes
@@ -1248,6 +1241,8 @@ class BeamModulePlugin implements Plugin<Project> {
         reports {
           xml.required = true
           html.required = true
+          xml.outputLocation = project.layout.buildDirectory.dir('test-jacoco')
+          html.outputLocation = project.layout.buildDirectory.dir('test-jacoco')
         }
         executionData(project.file("${project.buildDir}/jacoco/*.exec"))
       }
