@@ -58,7 +58,7 @@ env:
 jobs:
   beam_PreCommit_SQL:
     name: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-    runs-on: [self-hosted, ubuntu-20.04, main]
+    runs-on: [self-hosted, macOS, x64, local]
     strategy:
       matrix:
         job_name: [beam_PreCommit_SQL]
@@ -116,23 +116,23 @@ jobs:
         if: always()
         with:
           name: Jacoco Results XML 1
-          path: '**/reports/**/*.xml'
+          path: '**/test-jacoco/**/*.xml'
       - name: Archive Jacoco Results XML 2
         uses: actions/upload-artifact@v2
         if: always()
         with:
           name: Jacoco Results XML 2
-          path: '**/reports/jacoco/**/*.xml'
+          path: '**/test-jacoco/**/*.xml'
       - name: Archive Jacoco Results HTML
         uses: actions/upload-artifact@v2
         if: always()
         with:
           name: Jacoco Results HTML
-          path: '**/reports/jacoco/**/*.html'
+          path: '**/test-jacoco/**/*.html'
       - name: JaCoCo Code Coverage Report
         id: jacoco_reporter
         if: always()
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: '**/reports/jacoco/**/*.xml'
+          coverage_results_path: '**/test-jacoco/**/*.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
