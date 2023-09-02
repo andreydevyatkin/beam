@@ -1241,6 +1241,7 @@ class BeamModulePlugin implements Plugin<Project> {
         reports {
           xml.required = true
           html.required = true
+          xml.outputLocation = project.layout.buildDirectory.dir('test-jacoco')
           html.outputLocation = project.layout.buildDirectory.dir('test-jacoco')
         }
         executionData(project.file("${project.buildDir}/jacoco/*.exec"))
