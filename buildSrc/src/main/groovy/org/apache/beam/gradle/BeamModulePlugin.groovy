@@ -1247,7 +1247,9 @@ class BeamModulePlugin implements Plugin<Project> {
         }
         reports {
           xml.required = true
+          html.required = true
         }
+        executionData(file("$buildDir/jacoco/*.exec"))
       }
 
 
