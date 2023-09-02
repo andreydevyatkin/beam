@@ -85,14 +85,14 @@ jobs:
           java-version: '11'
           cache: 'gradle'
           check-latest: true
-    #   - name: Build and Test
-    #     uses: ./.github/actions/gradle-command-self-hosted-action
-    #     with:
-    #       gradle-command: :sqlPreCommit
-    #       arguments: |
-    #         -PdisableSpotlessCheck=true \
-    #         -PdisableCheckStyle=true \
-    #         -PenableJacocoReport \
+      - name: Build and Test
+        uses: ./.github/actions/gradle-command-self-hosted-action
+        with:
+          gradle-command: :sqlPreCommit
+          arguments: |
+            -PdisableSpotlessCheck=true \
+            -PdisableCheckStyle=true \
+            -PenableJacocoReport \
       - name: Generate JaCoCo XML Report
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
@@ -111,16 +111,22 @@ jobs:
         with:
           name: SpotBugs Results
           path: '**/build/reports/spotbugs/*.html'
-      - name: Archive Jacoco Results
+      - name: Archive Jacoco Results XML
         uses: actions/upload-artifact@v2
         if: always()
         with:
           name: Jacoco Results
-          path: '**/build/reports/jacoco/**/*.xml'
+          path: '**/reports/jacoco/**/*.xml'
+      - name: Archive Jacoco Results ALL
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Jacoco Results
+          path: '**/reports/jacoco/**/'
       - name: JaCoCo Code Coverage Report
         id: jacoco_reporter
         if: always()
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: '**/build/reports/jacoco/**/*.xml'
+          coverage_results_path: '**/reports/jacoco/**/*.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
