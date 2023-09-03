@@ -1243,8 +1243,8 @@ class BeamModulePlugin implements Plugin<Project> {
         reports {
           xml.enabled = true
           html.enabled = true
-          xml.outputLocation = project.file("${project.buildDir}/reports/jacoco/xml/jacocoTestReport.xml")
-          html.outputLocation = project.file("${project.buildDir}/reports/jacoco/html/")
+          // xml.outputLocation = project.file("${project.buildDir}/reports/jacoco/xml/jacocoTestReport.xml")
+          // html.outputLocation = project.file("${project.buildDir}/reports/jacoco/html/")
         }
         // executionData(project.file("${project.buildDir}/jacoco/test.exec"))
       }
