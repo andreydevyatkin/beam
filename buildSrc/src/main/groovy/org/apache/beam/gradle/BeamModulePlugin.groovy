@@ -1225,11 +1225,9 @@ class BeamModulePlugin implements Plugin<Project> {
           excludes = jacocoExcludes
           includes = jacocoIncludes
         }
-        finalizedBy project.jacocoTestReport
       }
 
       project.jacocoTestReport {
-        dependsOn project.test
         doFirst {
           getClassDirectories().setFrom(project.files(
               project.fileTree(
