@@ -505,7 +505,7 @@ class BeamModulePlugin implements Plugin<Project> {
           }
         }
 
-        project.tasks.withType(JacocoTestReport) {
+        project.tasks.withType(JacocoReport) {
           doFirst {
             getClassDirectories().setFrom(project.files(
               project.fileTree(
