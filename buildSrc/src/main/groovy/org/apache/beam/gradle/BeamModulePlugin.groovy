@@ -521,7 +521,6 @@ class BeamModulePlugin implements Plugin<Project> {
             xml.outputLocation = project.file("${project.buildDir}/test-jacoco")
             html.outputLocation = project.file("${project.buildDir}/test-jacoco")
           }
-          dependsOn test
           // executionData(project.file("${project.buildDir}/jacoco/*.exec"))
         }
       }
