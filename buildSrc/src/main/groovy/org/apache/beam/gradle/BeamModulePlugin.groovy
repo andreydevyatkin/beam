@@ -1225,9 +1225,11 @@ class BeamModulePlugin implements Plugin<Project> {
           excludes = jacocoExcludes
           includes = jacocoIncludes
         }
+        finalizedBy project.jacocoTestReport
       }
 
       project.jacocoTestReport {
+        dependsOn project.test
         doFirst {
           getClassDirectories().setFrom(project.files(
               project.fileTree(
@@ -1241,7 +1243,7 @@ class BeamModulePlugin implements Plugin<Project> {
         reports {
           xml.enabled = true
           html.enabled = true
-          xml.outputLocation = project.file("${project.buildDir}/reports/jacoco/xml/jacocoTestReport.xml"))
+          xml.outputLocation = project.file("${project.buildDir}/reports/jacoco/xml/jacocoTestReport.xml")
           html.outputLocation = project.file("${project.buildDir}/reports/jacoco/html/")
         }
         executionData(project.file("${project.buildDir}/jacoco/test.exec"))
