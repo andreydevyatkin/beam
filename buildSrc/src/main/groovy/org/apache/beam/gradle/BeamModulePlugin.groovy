@@ -485,7 +485,46 @@ class BeamModulePlugin implements Plugin<Project> {
       // Disable jacoco unless report requested such that task outputs can be properly cached.
       // https://discuss.gradle.org/t/do-not-cache-if-condition-matched-jacoco-agent-configured-with-append-true-satisfied/23504
       def enabled = project.hasProperty('enableJacocoReport') || graph.allTasks.any { it instanceof JacocoReport || it.name.contains('javaPreCommit') }
-      project.tasks.withType(Test) { jacoco.enabled = enabled }
+      if (enabled) {
+        def jacocoExcludes = [
+          '**/org/apache/beam/gradle/**',
+          '**/org/apache/beam/model/**',
+          '**/org/apache/beam/runners/dataflow/worker/windmill/**',
+          '**/AutoValue_*'
+        ]
+
+        def jacocoIncludes = [
+          '**/org/apache/beam/sdk/extensions/sql/**'
+        ]
+
+        project.tasks.withType(Test) {
+          jacoco {
+            enabled = true
+            excludes = jacocoExcludes
+            includes = jacocoIncludes
+          }
+        }
+
+        project.tasks.withType(JacocoTestReport) {
+          doFirst {
+            getClassDirectories().setFrom(project.files(
+              project.fileTree(
+                dir: "${project.rootDir}",
+                exclude: jacocoExcludes,
+                include: jacocoIncludes
+              )
+            ))
+          }
+          reports {
+            xml.enabled = true
+            html.enabled = true
+            xml.outputLocation = project.file("${project.buildDir}/test-jacoco")
+            html.outputLocation = project.file("${project.buildDir}/test-jacoco")
+          }
+          dependsOn test
+          // executionData(project.file("${project.buildDir}/jacoco/*.exec"))
+        }
+      }
     }
 
     // Apply a plugin which provides tasks for dependency / property / task reports.
@@ -1209,43 +1248,43 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      def jacocoExcludes = [
-        '**/org/apache/beam/gradle/**',
-        '**/org/apache/beam/model/**',
-        '**/org/apache/beam/runners/dataflow/worker/windmill/**',
-        '**/AutoValue_*'
-      ]
+      // def jacocoExcludes = [
+      //   '**/org/apache/beam/gradle/**',
+      //   '**/org/apache/beam/model/**',
+      //   '**/org/apache/beam/runners/dataflow/worker/windmill/**',
+      //   '**/AutoValue_*'
+      // ]
 
-      def jacocoIncludes = [
-        '**/org/apache/beam/sdk/extensions/sql/**'
-      ]
+      // def jacocoIncludes = [
+      //   '**/org/apache/beam/sdk/extensions/sql/**'
+      // ]
 
-      project.test {
-        jacoco {
-          excludes = jacocoExcludes
-          includes = jacocoIncludes
-        }
-      }
+      // project.test {
+      //   jacoco {
+      //     excludes = jacocoExcludes
+      //     includes = jacocoIncludes
+      //   }
+      // }
 
-      project.jacocoTestReport {
-        doFirst {
-          getClassDirectories().setFrom(project.files(
-              project.fileTree(
-              dir: "${project.rootDir}",
-              exclude: jacocoExcludes,
-              include: jacocoIncludes
-              )
-              )
-              )
-        }
-        reports {
-          xml.required = true
-          html.required = true
-          xml.outputLocation = project.file("${project.buildDir}/test-jacoco")
-          html.outputLocation = project.file("${project.buildDir}/test-jacoco")
-        }
-        executionData(project.file("${project.buildDir}/jacoco/*.exec"))
-      }
+      // project.jacocoTestReport {
+      //   doFirst {
+      //     getClassDirectories().setFrom(project.files(
+      //         project.fileTree(
+      //         dir: "${project.rootDir}",
+      //         exclude: jacocoExcludes,
+      //         include: jacocoIncludes
+      //         )
+      //         )
+      //         )
+      //   }
+      //   reports {
+      //     xml.enabled = true
+      //     html.enabled = true
+      //     xml.outputLocation = project.file("${project.buildDir}/test-jacoco")
+      //     html.outputLocation = project.file("${project.buildDir}/test-jacoco")
+      //   }
+      //   executionData(project.file("${project.buildDir}/jacoco/*.exec"))
+      // }
 
 
 
