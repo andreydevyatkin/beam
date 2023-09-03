@@ -29,7 +29,7 @@ inputs:
     description: 'Default gradle switches' # Copied from CommonJobProperties.groovy'
     default: |
       --continue -Dorg.gradle.jvmargs=-Xms2g -Dorg.gradle.jvmargs=-Xmx6g \
-      -Dorg.gradle.vfs.watch=false -Pdocker-pull-licenses
+      -Dorg.gradle.vfs.watch=false -Pdocker-pull-licenses --stacktrace --debug
   max-workers:
     required: false
     description: 'Max number of workers'

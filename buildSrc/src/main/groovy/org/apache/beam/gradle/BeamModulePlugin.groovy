@@ -1225,11 +1225,11 @@ class BeamModulePlugin implements Plugin<Project> {
           excludes = jacocoExcludes
           includes = jacocoIncludes
         }
-        finalizedBy project.jacocoTestReport
+        // finalizedBy project.jacocoTestReport
       }
 
       project.jacocoTestReport {
-        dependsOn project.test
+        // dependsOn project.test
         doFirst {
           getClassDirectories().setFrom(project.files(
               project.fileTree(
@@ -1246,7 +1246,7 @@ class BeamModulePlugin implements Plugin<Project> {
           xml.outputLocation = project.file("${project.buildDir}/reports/jacoco/xml/jacocoTestReport.xml")
           html.outputLocation = project.file("${project.buildDir}/reports/jacoco/html/")
         }
-        executionData(project.file("${project.buildDir}/jacoco/test.exec"))
+        // executionData(project.file("${project.buildDir}/jacoco/test.exec"))
       }
 
 
