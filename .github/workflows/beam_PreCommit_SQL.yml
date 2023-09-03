@@ -88,15 +88,7 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :sqlPreCommit
-          arguments: |
-            -PdisableSpotlessCheck=true \
-            -PdisableCheckStyle=true \
-            -PenableJacocoReport \
-      - name: Generate JaCoCo Report
-        uses: ./.github/actions/gradle-command-self-hosted-action
-        with:
-          gradle-command: jacocoTestReport
+          gradle-command: :sqlPreCommit jacocoTestReport
           arguments: |
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
