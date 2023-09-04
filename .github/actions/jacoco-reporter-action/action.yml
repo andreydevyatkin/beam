@@ -101,5 +101,6 @@ runs:
   steps:
     - name: Run script
       shell: pwsh
-      run: .\action.ps1 -coverage_results_path ${{ inputs.coverage_results_path }} -github_token ${{ inputs.github_token }}
+      run: |
+        .\action.ps1 -coverage_results_path ${{ inputs.coverage_results_path }} -github_token ${{ inputs.github_token }}
         
