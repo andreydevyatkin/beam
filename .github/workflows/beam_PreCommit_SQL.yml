@@ -122,5 +122,5 @@ jobs:
         if: always()
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: '**/build/reports/jacoco/**/*.xml'
+          coverage_results_path: '/runner/_work/beam/beam/sdks/java/extensions/sql/build/reports/jacoco/test/jacocoTestReport.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
