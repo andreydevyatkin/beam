@@ -85,6 +85,13 @@ jobs:
           java-version: '11'
           cache: 'gradle'
           check-latest: true
+      - name: Install PowerShell
+        run: |
+          # Download and install PowerShell
+          wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install -y powershell
       - name: Build and Test
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
@@ -93,34 +100,34 @@ jobs:
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
             -PenableJacocoReport \
-      - name: Generate JaCoCo Report
-        uses: ./.github/actions/gradle-command-self-hosted-action
-        with:
-            gradle-command: jacocoTestReport
-            arguments: |
-              -PdisableSpotlessCheck=true \
-              -PdisableCheckStyle=true \
-              -PenableJacocoReport \
-      - name: Archive JUnit Test Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: JUnit Test Results
-          path: '**/build/test-results/**/*.xml'
-      - name: Archive SpotBugs Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: SpotBugs Results
-          path: '**/build/reports/spotbugs/*.html'
-      - name: Archive Jacoco Results
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: Jacoco Results XML
-          path: '**/build/reports/jacoco/**/*.xml'
+    #   - name: Generate JaCoCo Report
+    #     uses: ./.github/actions/gradle-command-self-hosted-action
+    #     with:
+    #         gradle-command: jacocoTestReport
+    #         arguments: |
+    #           -PdisableSpotlessCheck=true \
+    #           -PdisableCheckStyle=true \
+    #           -PenableJacocoReport \
+    #   - name: Archive JUnit Test Results
+    #     uses: actions/upload-artifact@v3
+    #     with:
+    #       name: JUnit Test Results
+    #       path: '**/build/test-results/**/*.xml'
+    #   - name: Archive SpotBugs Results
+    #     uses: actions/upload-artifact@v2
+    #     with:
+    #       name: SpotBugs Results
+    #       path: '**/build/reports/spotbugs/*.html'
+    #   - name: Archive Jacoco Results
+    #     uses: actions/upload-artifact@v2
+    #     if: always()
+    #     with:
+    #       name: Jacoco Results XML
+    #       path: '**/build/reports/jacoco/**/*.xml'
       - name: JaCoCo Code Coverage Report
         id: jacoco_reporter
         if: always()
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: '/Users/andrey.devyatkin/Desktop/projects/Beam/actions-runner/_work/beam/beam/sdks/java/extensions/sql/build/reports/jacoco/test/jacocoTestReport.xml'
+          coverage_results_path: '**/build/reports/jacoco/**/*.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
