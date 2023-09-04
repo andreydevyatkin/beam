@@ -85,14 +85,14 @@ jobs:
           java-version: '11'
           cache: 'gradle'
           check-latest: true
-    #   - name: Build and Test
-    #     uses: ./.github/actions/gradle-command-self-hosted-action
-    #     with:
-    #       gradle-command: :sqlPreCommit
-    #       arguments: |
-    #         -PdisableSpotlessCheck=true \
-    #         -PdisableCheckStyle=true \
-    #         -PenableJacocoReport \
+      - name: Build and Test
+        uses: ./.github/actions/gradle-command-self-hosted-action
+        with:
+          gradle-command: :sqlPreCommit
+          arguments: |
+            -PdisableSpotlessCheck=true \
+            -PdisableCheckStyle=true \
+            -PenableJacocoReport \
     #   - name: Generate JaCoCo Report
     #     uses: ./.github/actions/gradle-command-self-hosted-action
     #     with:
@@ -118,8 +118,15 @@ jobs:
     #       name: Jacoco Results XML
     #       path: '**/build/reports/jacoco/**/*.xml'
       - name: JaCoCo Code Coverage Report
+        id: jacoco_reporter
         if: always()
-        uses: ./.github/actions/jacoco-reporter-action
+        uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
           coverage_results_path: '**/build/reports/jacoco/**/*.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
+    #   - name: JaCoCo Code Coverage Report
+    #     if: always()
+    #     uses: ./.github/actions/jacoco-reporter-action
+    #     with:
+    #       coverage_results_path: '**/build/reports/jacoco/**/*.xml'
+    #       github_token: ${{ secrets.GITHUB_TOKEN }}
