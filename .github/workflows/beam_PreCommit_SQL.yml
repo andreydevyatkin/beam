@@ -85,34 +85,34 @@ jobs:
           java-version: '11'
           cache: 'gradle'
           check-latest: true
-    #   - name: Build and Test
-    #     uses: ./.github/actions/gradle-command-self-hosted-action
-    #     with:
-    #       gradle-command: :sqlPreCommit jacocoTestReport
-    #       arguments: |
-    #         -PdisableSpotlessCheck=true \
-    #         -PdisableCheckStyle=true \
-    #         -PenableJacocoReport \
-    #   - name: Archive JUnit Test Results
-    #     uses: actions/upload-artifact@v3
-    #     with:
-    #       name: JUnit Test Results
-    #       path: '**/build/test-results/**/*.xml'
-    #   - name: Archive SpotBugs Results
-    #     uses: actions/upload-artifact@v2
-    #     with:
-    #       name: SpotBugs Results
-    #       path: '**/build/reports/spotbugs/*.html'
+      - name: Build and Test
+        uses: ./.github/actions/gradle-command-self-hosted-action
+        with:
+          gradle-command: :sqlPreCommit jacocoTestReport
+          arguments: |
+            -PdisableSpotlessCheck=true \
+            -PdisableCheckStyle=true \
+            -PenableJacocoReport \
+      - name: Archive JUnit Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: JUnit Test Results
+          path: '**/build/test-results/**/*.xml'
+      - name: Archive SpotBugs Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: SpotBugs Results
+          path: '**/build/reports/spotbugs/*.html'
       - name: Archive Jacoco Results
         uses: actions/upload-artifact@v2
         with:
           name: Jacoco Results XML
-          path: 'jacoco/build/reports/jacoco/**/*.xml'
+          path: '**/build/reports/jacoco/**/*.xml'
       - name: JaCoCo Code Coverage Report
         id: jacoco_reporter
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: 'jacoco/build/reports/jacoco/**/*.xml'
+          coverage_results_path: '/Users/andrey.devyatkin/Desktop/projects/Beam/actions-runner/_work/beam/beam/sdks/java/extensions/sql/build/reports/jacoco/test/jacocoTestReport.xml'
           coverage_report_name: Coveragex
           coverage_report_title: 'JaCoCo'
           github_token: ${{ secrets.GITHUB_TOKEN }}
