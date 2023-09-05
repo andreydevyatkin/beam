@@ -114,7 +114,7 @@ jobs:
         if: always()
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: '/Users/andrey.devyatkin/Desktop/projects/Beam/actions-runner/_work/beam/beam/sdks/java/extensions/sql/build/reports/jacoco/test/jacocoTestReport.xml'
+          coverage_results_path: '/Users/andrey.devyatkin/Desktop/projects/Beam/actions-runner/_work/beam/beam/sdks/java/extensions/sql/hcatalog/build/reports/jacoco/test/jacocoTestReport.xml'
           coverage_report_name: Coveragex
           coverage_report_title: 'JaCoCo'
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -122,3 +122,5 @@ jobs:
           minimum_coverage: 80
           fail_below_threshold: false
           publish_only_summary: false
+      - name: Add Coverage Job Summary
+        run: echo "${{ steps.jacoco_reporter.outputs.coverageSummary }}" >> $GITHUB_STEP_SUMMARY
