@@ -58,7 +58,7 @@ env:
 jobs:
   beam_PreCommit_SQL:
     name: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-    runs-on: [self-hosted, macOS, local]
+    runs-on: [self-hosted, Linux, local]
     strategy:
       matrix:
         job_name: [beam_PreCommit_SQL]
@@ -85,13 +85,6 @@ jobs:
           java-version: '11'
           cache: 'gradle'
           check-latest: true
-      - name: Install PowerShell
-        run: |
-            # Download and install PowerShell
-            wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-            sudo dpkg -i packages-microsoft-prod.deb
-            sudo apt-get update -y
-            sudo apt-get install -y powershell
       - name: Build and Test
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
