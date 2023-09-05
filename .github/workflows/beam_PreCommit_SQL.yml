@@ -58,7 +58,7 @@ env:
 jobs:
   beam_PreCommit_SQL:
     name: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-    runs-on: [self-hosted, ubuntu-20.04, main]
+    runs-on: [self-hosted, macOS, local]
     strategy:
       matrix:
         job_name: [beam_PreCommit_SQL]
@@ -123,5 +123,10 @@ jobs:
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
           coverage_results_path: '/runner/_work/beam/beam/sdks/java/extensions/sql/build/reports/jacoco/test/jacocoTestReport.xml'
-          coverage_report_title: 'JaCoCo Code Coverage Report'
+          coverage_report_name: Coveragex
+          coverage_report_title: 'JaCoCo'
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: true
+          minimum_coverage: 80
+          fail_below_threshold: false
+          publish_only_summary: false
