@@ -46,6 +46,7 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import org.gradle.testing.jacoco.plugins.JacocoReportAggregationPlugin
 
 import java.net.ServerSocket
 
@@ -1225,11 +1226,9 @@ class BeamModulePlugin implements Plugin<Project> {
           excludes = jacocoExcludes
           includes = jacocoIncludes
         }
-        // finalizedBy project.jacocoTestReport
       }
 
       project.jacocoTestReport {
-        // dependsOn project.test
         // doFirst {
         //   getClassDirectories().setFrom(project.files(
         //       project.fileTree(
@@ -1243,10 +1242,7 @@ class BeamModulePlugin implements Plugin<Project> {
         reports {
           xml.enabled = true
           html.enabled = true
-          // xml.outputLocation = project.file("${project.buildDir}/reports/jacoco/xml/jacocoTestReport.xml")
-          // html.outputLocation = project.file("${project.buildDir}/reports/jacoco/html/")
         }
-        // executionData(project.file("${project.buildDir}/jacoco/test.exec"))
       }
 
 
