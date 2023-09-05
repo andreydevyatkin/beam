@@ -88,19 +88,11 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :sqlPreCommit
+          gradle-command: :sqlPreCommit jacocoTestReport
           arguments: |
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
             -PenableJacocoReport \
-      - name: Generate JaCoCo Report
-        uses: ./.github/actions/gradle-command-self-hosted-action
-        with:
-            gradle-command: jacocoTestReport
-            arguments: |
-              -PdisableSpotlessCheck=true \
-              -PdisableCheckStyle=true \
-              -PenableJacocoReport \
       - name: Archive JUnit Test Results
         uses: actions/upload-artifact@v3
         with:
