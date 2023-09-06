@@ -46,7 +46,6 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.testing.jacoco.tasks.JacocoReport
-import org.gradle.testing.jacoco.plugins.JacocoReportAggregationPlugin
 
 import java.net.ServerSocket
 
@@ -482,6 +481,11 @@ class BeamModulePlugin implements Plugin<Project> {
     // Provide code coverage
     // Enable when 'enableJacocoReport' project property is specified or when running ":javaPreCommit"
     project.apply plugin: "jacoco"
+
+    // Apply a plugin which provides the ability to aggregate the results of multiple JaCoCo code coverage reports.
+    // See https://docs.gradle.org/current/userguide/jacoco_report_aggregation_plugin.html for further details.
+    project.apply plugin: "jacoco-report-aggregation"
+
     project.gradle.taskGraph.whenReady { graph ->
       // Disable jacoco unless report requested such that task outputs can be properly cached.
       // https://discuss.gradle.org/t/do-not-cache-if-condition-matched-jacoco-agent-configured-with-append-true-satisfied/23504
