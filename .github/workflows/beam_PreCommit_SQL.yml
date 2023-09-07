@@ -101,3 +101,27 @@ jobs:
         with:
           name: SpotBugs Results
           path: '**/build/reports/spotbugs/*.html'
+      - name: Archive Jacoco Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: Jacoco Results XML
+          path: '**/build/reports/jacoco/**/*.xml'
+      - name: JaCoCo Code Coverage Report
+        id: jacoco_reporter
+        uses: PavanMudigonda/jacoco-reporter@v4.8
+        with:
+          coverage_results_path: '/runner/_work/beam/beam/sdks/java/extensions/sql/build/reports/jacoco/test/jacocoTestReport.xml'
+          coverage_report_name: 'JaCoCo Code Coverage Report'
+          coverage_report_title: 'JaCoCo Code Coverage Report'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: true
+          minimum_coverage: 80
+          fail_below_threshold: false
+          publish_only_summary: true
+      - name: Add Coverage Job Summary
+        run: echo "${{ steps.jacoco_reporter.outputs.coverageSummary }}" >> $GITHUB_STEP_SUMMARY
+      - name: Upload Code Coverage Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report-markdown
+          path: '**/coverage-results.md'
