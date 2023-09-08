@@ -97,12 +97,12 @@ jobs:
           name: JUnit Test Results
           path: '**/build/test-results/**/*.xml'
       - name: Archive SpotBugs Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: SpotBugs Results
           path: '**/build/reports/spotbugs/*.html'
       - name: Archive Jacoco Results HTML
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Jacoco Results HTML
           path: '**/java/extensions/sql/build/reports/jacoco/codeCoverageReport/html/**'
@@ -110,7 +110,7 @@ jobs:
         id: jacoco_reporter
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: '${{ env.GITHUB_WORKSPACE }}/sdks/java/extensions/sql/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml'
+          coverage_results_path: ${{ github.workspace }}/sdks/java/extensions/sql/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml
           coverage_report_name: 'JaCoCo Coverage Report'
           coverage_report_title: 'JaCoCo Coverage Report'
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -118,8 +118,3 @@ jobs:
           publish_only_summary: true
       - name: Add Coverage Job Summary
         run: echo "${{ steps.jacoco_reporter.outputs.coverageSummary }}" >> $GITHUB_STEP_SUMMARY
-      - name: Upload Code Coverage Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-markdown
-          path: '**/coverage-results.md'
