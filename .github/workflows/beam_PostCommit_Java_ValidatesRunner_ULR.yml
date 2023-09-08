@@ -13,29 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: PreCommit Java Flink Versions
+name: PostCommit Java ValidatesRunner ULR
 
 on:
-  push:
-    tags: ['v*']
-    branches: ['master', 'release-*']
-    paths:
-      - 'model/**'
-      - 'runners/flink/**'
-      - 'release/**'
-      - '.github/workflows/beam_PreCommit_Java_Flink_Versions.yml'
-  pull_request_target:
-    branches: ['master', 'release-*']
-    paths:
-      - 'model/**'
-      - 'runners/flink/**'
-      - 'release/**'
   issue_comment:
     types: [created]
   schedule:
-  - cron: '20 */6 * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
+#Setting explicit permissions for the action to avoid the default permissions which are `write-all` in case of pull_request_target event
 permissions:
   actions: write
   pull-requests: read
@@ -53,7 +40,7 @@ permissions:
 
 # This allows a subsequently queued workflow run to interrupt previous runs
 concurrency:
-  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.sha || github.head_ref || github.ref }}-${{ github.event.sender.login }}-${{ github.event.schedule }}'
+  group: '${{ github.workflow }} @ ${{ github.sha || github.head_ref || github.ref }}-${{ github.event.sender.login }}-${{ github.event.schedule }}'
   cancel-in-progress: true
 
 env:
@@ -62,20 +49,18 @@ env:
   GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GE_CACHE_PASSWORD }}
 
 jobs:
-  beam_PreCommit_Java_Flink_Versions:
-    name: ${{matrix.job_name}} (${{matrix.job_phrase}})
+  beam_PostCommit_Java_ValidatesRunner_ULR:    
+    name: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
     runs-on: [self-hosted, ubuntu-20.04, main]
-    timeout-minutes: 120
+    timeout-minutes: 180
     strategy:
       matrix:
-        job_name: [beam_PreCommit_Java_Flink_Versions]
-        job_phrase: [Run Java_Flink_Versions PreCommit]
+        job_name: [beam_PostCommit_Java_ValidatesRunner_ULR]
+        job_phrase: [Run ULR Loopback ValidatesRunner]
     if: |
-      github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'pull_request_target' ||
       github.event_name == 'schedule' ||
-      github.event.comment.body == 'Run Java_Flink_Versions PreCommit'
+      github.event.comment.body == 'Run ULR Loopback ValidatesRunner'
     steps:
       - uses: actions/checkout@v3
       - name: Setup repository
@@ -89,22 +74,13 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.8'
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          cache-read-only: false
-      - name: run Java Flink Versions PreCommit script
+      - name: run ulrLoopbackValidatesRunner script
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :flinkPreCommit
-          arguments: |
-            -PdisableSpotlessCheck=true -PdisableCheckStyle=true \
-      - name: Archive JUnit Test Results
+          gradle-command: :runners:portability:java:ulrLoopbackValidatesRunner
+      - name: Upload test report
         uses: actions/upload-artifact@v3
+        if: always()
         with:
-          name: JUnit Test Results
-          path: '**/build/test-results/**/*.xml'
+          name: java-code-coverage-report
+          path: "**/build/test-results/**/*.xml"

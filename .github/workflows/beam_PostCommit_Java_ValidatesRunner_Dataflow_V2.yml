@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-name: PostCommit Java ValidatesRunner Dataflow Java
+name: PostCommit Java ValidatesRunner Dataflow V2
 
 on:
   issue_comment:
@@ -51,59 +51,39 @@ env:
   GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GE_CACHE_PASSWORD }}
 
 jobs:
-  beam_PostCommit_Java_ValidatesRunner_Dataflow_Java:
-    name: ${{matrix.job_name}} (${{matrix.job_phrase}} ${{matrix.java_version}}) 
+  beam_PostCommit_Java_ValidatesRunner_Dataflow_V2:
+    name: ${{matrix.job_name}} (${{matrix.job_phrase}})
     runs-on: [self-hosted, ubuntu-20.04, main]
-    timeout-minutes: 480
+    timeout-minutes: 390
     strategy:
-      fail-fast: false
       matrix:
-        job_name: [beam_PostCommit_Java_ValidatesRunner_Dataflow_Java]
-        job_phrase: [Run Dataflow ValidatesRunner Java]
-        java_version: ['11','17']
+        job_name: [beam_PostCommit_Java_ValidatesRunner_Dataflow_V2]
+        job_phrase: [Run Java Dataflow V2 ValidatesRunner]
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule' ||
-      startswith(github.event.comment.body, 'Run Dataflow ValidatesRunner Java')
+      github.event.comment.body == 'Run Java Dataflow V2 ValidatesRunner'
     steps:
       - uses: actions/checkout@v3
       - name: Setup repository
         uses: ./.github/actions/setup-action
         with:
-          comment_phrase: ${{ matrix.job_phrase }} ${{matrix.java_version}}
+          comment_phrase: ${{ matrix.job_phrase }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          github_job: ${{ matrix.job_name }} (${{ matrix.job_phrase }}) ${{matrix.java_version}}
-      - name: Set up Java${{ matrix.java_version }}
+          github_job: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
+      - name: Install Java
         uses: actions/setup-java@v3.8.0
         with:
-          distribution: 'temurin'
-          java-version: |
-            ${{ matrix.java_version }}
-            8
-      - name: run jar Java${{ matrix.java_version }} script
+          distribution: 'zulu'
+          java-version: '8'
+      - name: run validatesRunnerV2 script
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :runners:google-cloud-dataflow-java:testJar :runners:google-cloud-dataflow-java:worker:shadowJar
-          arguments: |
-            -Dorg.gradle.java.home=$JAVA_HOME_8_X64 \
-      - name: run validatesRunner Java${{ matrix.java_version }} script
-        uses: ./.github/actions/gradle-command-self-hosted-action
-        with:
-          gradle-command: :runners:google-cloud-dataflow-java:validatesRunner
-          arguments: |
-            -x shadowJar \
-            -x shadowTestJar \
-            -x compileJava \
-            -x compileTestJava \
-            -x jar \
-            -x testJar \
-            -x classes \
-            -x testClasses \
-            -Dorg.gradle.java.home=$JAVA_HOME_${{ matrix.java_version }}_X64 \
+          gradle-command: :runners:google-cloud-dataflow-java:validatesRunnerV2
           max-workers: 12
       - name: Upload test report
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: java-code-coverage-report
-          path: "**/build/test-results/**/*.xml" 
+          path: "**/build/test-results/**/*.xml"
