@@ -101,30 +101,21 @@ jobs:
         with:
           name: SpotBugs Results
           path: '**/build/reports/spotbugs/*.html'
-      - name: Archive Jacoco Results XML
-        uses: actions/upload-artifact@v2
-        with:
-          name: Jacoco Results XML
-          path: '**/build/reports/jacoco/**/*.xml'
       - name: Archive Jacoco Results HTML
         uses: actions/upload-artifact@v2
         with:
           name: Jacoco Results HTML
-          path: '**/build/reports/jacoco/**/*.html'
-      - name: JaCoCo Code Coverage Report
+          path: '**/java/extensions/sql/build/reports/jacoco/codeCoverageReport/html/**'
+      - name: JaCoCo Coverage Report
         id: jacoco_reporter
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: '/runner/_work/beam/beam/sdks/java/extensions/sql/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml'
-          coverage_report_name: 'JaCoCo Code Coverage Report'
-          coverage_report_title: 'JaCoCo Code Coverage Report'
+          coverage_results_path: '${{ env.GITHUB_WORKSPACE }}/sdks/java/extensions/sql/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml'
+          coverage_report_name: 'JaCoCo Coverage Report'
+          coverage_report_title: 'JaCoCo Coverage Report'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          skip_check_run: true
-          minimum_coverage: 80
-          fail_below_threshold: false
-          publish_only_summary: true
-      - name: Add Coverage Job Summary
-        run: echo "${{ steps.jacoco_reporter.outputs.coverageSummary }}" >> $GITHUB_STEP_SUMMARY
+          skip_check_run: false
+          publish_only_summary: true  
       - name: Upload Code Coverage Artifacts
         uses: actions/upload-artifact@v2
         with:
