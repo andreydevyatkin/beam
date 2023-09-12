@@ -1,0 +1,85 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * License); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an AS IS BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins { id 'org.apache.beam.module' }
+applyJavaNature(exportJavadoc: false, publish: false)
+
+description = "Apache Beam :: SDKs :: Java"
+
+// exclude auto-generated classes and integration tests
+def jacocoExcludes = [
+        '**/org/apache/beam/gradle/**,**/org/apache/beam/model/**',
+        '**/org/apache/beam/runners/dataflow/worker/windmill/**',
+        '**/AutoValue_*',
+        '**/org/apache/beam/sdk/extensions/avro/**',
+        '**/org/apache/beam/sdk/extensions/sql/**',
+        '**/org/apache/beam/sdk/io/aws/**',
+        '**/org/apache/beam/sdk/io/aws2/**',
+        '**/org/apache/beam/sdk/io/amqp/**',
+        '**/org/apache/beam/sdk/io/azure/**',
+        '**/org/apache/beam/sdk/io/cassandra/**',
+        '**/org/apache/beam/sdk/io/cdap/**',
+        '**/org/apache/beam/sdk/io/clickhouse/**',
+        '**/org/apache/beam/sdk/io/csv/**',
+        '**/org/apache/beam/sdk/io/debezium/**',
+        '**/org/apache/beam/sdk/io/elasticsearch/**',
+        '**/org/apache/beam/sdk/io/elasticsearch-tests/**',
+        '**/org/apache/beam/sdk/io/file-schema-transform/**',
+        '**/org/apache/beam/sdk/io/google-ads/**',
+        '**/org/apache/beam/sdk/io/gcp/**',
+        '**/org/apache/beam/sdk/io/hadoop/**',
+        '**/org/apache/beam/sdk/io/hadoop-file-system/**',
+        '**/org/apache/beam/sdk/io/hadoop-format/**',
+        '**/org/apache/beam/sdk/io/hbase/**',
+        '**/org/apache/beam/sdk/io/hcatalog/**',
+        '**/org/apache/beam/sdk/io/influxdb/**',
+        '**/org/apache/beam/sdk/io/jdbc/**',
+        '**/org/apache/beam/sdk/io/jms/**',
+        '**/org/apache/beam/sdk/io/kafka/**',
+        '**/org/apache/beam/sdk/io/kinesis/**',
+        '**/org/apache/beam/sdk/io/kudu/**',
+        '**/org/apache/beam/sdk/io/mqtt/**',
+        '**/org/apache/beam/sdk/io/mongodb/**',
+        '**/org/apache/beam/sdk/io/neo4j/**',
+        '**/org/apache/beam/sdk/io/parquet/**',
+        '**/org/apache/beam/sdk/io/pulsar/**',
+        '**/org/apache/beam/sdk/io/rabbitmq/**',
+        '**/org/apache/beam/sdk/io/redis/**',
+        '**/org/apache/beam/sdk/io/singlestore/**',
+        '**/org/apache/beam/sdk/io/snowflake/**',
+        '**/org/apache/beam/sdk/io/solr/**',
+        '**/org/apache/beam/sdk/io/splunk/**',
+        '**/org/apache/beam/sdk/io/thrift/**',
+        '**/org/apache/beam/sdk/io/tika/**'
+]
+
+task codeCoverageReport(type: JacocoReport, dependsOn: test) {
+  group = "Reporting"
+  description = "Generates code coverage report for Java related classes"
+  classDirectories.setFrom(files(files(project.sourceSets.main.output).collect {
+            project.fileTree(
+                    dir: it,
+                    excludes: jacocoExcludes)
+  }))
+  sourceDirectories.setFrom(files(project.sourceSets.main.allSource.srcDirs))
+  executionData.setFrom(file("${buildDir}/jacoco/test.exec"))
+  reports {
+    xml.enabled true
+    html.enabled true
+  }
+}
