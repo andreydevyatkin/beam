@@ -317,6 +317,8 @@ tasks.register("javaPreCommit") {
   dependsOn(":sdks:java:javadoc:allJavadoc")
   dependsOn(":runners:direct-java:needsRunnerTests")
   dependsOn(":sdks:java:container:java8:docker")
+  
+  dependsOn(":sdks:java:codeCoverageReport")
 }
 
 // a precommit task build multiple IOs (except those splitting into single jobs)
