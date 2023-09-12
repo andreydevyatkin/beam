@@ -83,6 +83,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
+          cache: 'gradle'
+          check-latest: true
       - name: Build and Test
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
@@ -101,29 +103,29 @@ jobs:
         with:
           name: SpotBugs Results
           path: '**/build/reports/spotbugs/*.html'
-      - name: Archive Jacoco Results HTML
+      - name: Archive Jacoco Results
         uses: actions/upload-artifact@v3
         with:
-          name: Jacoco Results HTML
-          path: '**/java/extensions/sql/build/reports/jacoco/codeCoverageReport/html/**'
+          name: Jacoco Results
+          path: |
+            '**/sdks/java/extensions/sql/build/reports/jacoco/**/*.xml'
+            '**/sdks/java/extensions/sql/build/reports/jacoco/**/*.html'
       - name: JaCoCo Coverage Report
-        id: jacoco_coverage_report
+        id: jacoco-reporter
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
           coverage_results_path: '${{ github.workspace }}/sdks/java/extensions/sql/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml'
           coverage_report_name: 'JaCoCo Coverage Report'
-          coverage_report_title: 'JaCoCo Coverage Report'
+          coverage_report_title: 'Report'
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
-          publish_only_summary: true
-      - name: Jacoco Report
-        id: jacoco_report
-        uses: madrapps/jacoco-report@v1.6.1
-        with:
-          paths: '**/java/extensions/sql/build/reports/jacoco/**/*.xml'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: 'JaCoCo Coverage Report'
-      - name: Add Coverage Job Summary
-        run: |
-          echo "${{ steps.jacoco_report.outputs.coverage-overall }}" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.jacoco_report.outputs.coverage-changed-files }}" >> $GITHUB_STEP_SUMMARY
+          minimum_coverage: 0
+          fail_below_threshold: false
+          publish_only_summary: false
+      # - name: Add Coverage Job Summary
+      #   run: echo "${{ steps.jacoco-reporter.outputs.coverageSummary }}" >> $GITHUB_STEP_SUMMARY
+      # - name: Upload Code Coverage Artifacts
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: code-coverage-report-markdown
+      #     path: '**/coverage-results.md'
