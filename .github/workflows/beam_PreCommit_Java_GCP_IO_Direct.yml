@@ -124,7 +124,7 @@ jobs:
       - name: Set Jacoco report path
         id: jacoco_report_path
         run: |
-          echo "path=sdks/java/extensions/sql/build/reports/jacoco/codeCoverageReport" >> $GITHUB_OUTPUT
+          echo "path=sdks/java/io/google-cloud-platform/build/reports/jacoco/codeCoverageReport" >> $GITHUB_OUTPUT
       - name: Archive Jacoco Results
         uses: actions/upload-artifact@v3
         with:
