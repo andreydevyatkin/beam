@@ -23,7 +23,8 @@ description = "Apache Beam :: SDKs :: Java"
 
 // exclude auto-generated classes and integration tests
 def jacocoExcludes = [
-        '**/org/apache/beam/gradle/**,**/org/apache/beam/model/**',
+        '**/org/apache/beam/gradle/**'
+        '**/org/apache/beam/model/**',
         '**/org/apache/beam/runners/dataflow/worker/windmill/**',
         '**/AutoValue_*',
         '**/org/apache/beam/sdk/extensions/avro/**',

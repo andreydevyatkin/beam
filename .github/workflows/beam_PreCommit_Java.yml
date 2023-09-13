@@ -129,7 +129,7 @@ concurrency:
 permissions:
   actions: write
   pull-requests: read
-  checks: read
+  checks: write
   contents: read
   deployments: read
   id-token: none
@@ -171,6 +171,7 @@ jobs:
           arguments: |
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
+            -PenableJacocoReport \
       - name: Upload test report
         uses: actions/upload-artifact@v3
         with:
