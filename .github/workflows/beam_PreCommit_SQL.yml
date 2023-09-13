@@ -121,8 +121,6 @@ jobs:
           coverage_report_title: 'Report'
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
-          minimum_coverage: 0
-          fail_below_threshold: false
           publish_only_summary: true
       # - name: Add Coverage Job Summary
       #   run: echo "${{ steps.jacoco-reporter.outputs.coverageSummary }}" >> $GITHUB_STEP_SUMMARY
