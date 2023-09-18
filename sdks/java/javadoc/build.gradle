@@ -64,7 +64,7 @@ task aggregateJavadoc(type: Javadoc) {
   destinationDir = file("${buildDir}/docs/javadoc")
   failOnError = true
 
-  include "org/apache/beam/sdk/java"
+  include "org/apache/beam/sdk/java/*"
   exclude "org/apache/beam/examples/*"
   exclude "org/apache/beam/fn/harness/*"
   exclude "org/apache/beam/runners/core/*"
