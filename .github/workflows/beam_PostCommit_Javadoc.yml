@@ -75,17 +75,21 @@ jobs:
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
           gradle-command: :sdks:java:javadoc:aggregateJavadoc
-      - name: Upload Javadoc Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: Javadoc Results
-          path: '**/build/docs/javadoc/**'
+      - name: Set Javadoc report path
+        id: javadoc_report_path
+        run: |
+          echo "path=sdks/java/javadoc/build/docs/javadoc" >> $GITHUB_OUTPUT
+      # - name: Upload Javadoc Results
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: Javadoc Results
+      #     path: '**/${{ steps.javadoc_report_path.outputs.path }}/**'
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload Javadoc Results to GitHub Pages
         uses: actions/upload-pages-artifact@v2
         with:
-          path: '**/build/docs/javadoc/**'
+          path: '${{ github.workspace }}/${{ steps.javadoc_report_path.outputs.path }}'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
