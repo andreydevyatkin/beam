@@ -93,6 +93,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+        with:
+          timeout: 3600000
       - name: GitHub Page url
         run: |
           echo "path=${{ steps.deployment.outputs.page_url }}" >> $GITHUB_OUTPUT  
