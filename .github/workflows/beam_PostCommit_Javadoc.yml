@@ -36,11 +36,11 @@ permissions:
   checks: read
   contents: read
   deployments: read
-  id-token: none
+  id-token: write
   issues: read
   discussions: read
   packages: read
-  pages: read
+  pages: write
   repository-projects: read
   security-events: read
   statuses: read
@@ -75,6 +75,17 @@ jobs:
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
           gradle-command: :sdks:java:javadoc:aggregateJavadoc
+      - name: Upload Javadoc Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Javadoc Results
+          path: '**/src/sdks/java/javadoc/build/docs/javadoc/**'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+      - name: GitHub Page url
+        run: |
+          echo "path=${{ steps.deployment.outputs.page_url }}" >> $GITHUB_OUTPUT
       # - name: deploy Javadoc
       #   uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
       #   with:
