@@ -71,14 +71,18 @@ jobs:
           comment_phrase: ${{ matrix.job_phrase }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_job: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-      - name: deploy Javadoc
-        uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
+      - name: run PostCommit Java script
+        uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          project: gradle
-          javadoc-branch: javadoc
-          target-folder: src/sdks/java/javadoc/build/docs/javadoc 
-          custom-command: |
-            ./gradlew :sdks:java:javadoc:aggregateJavadoc --max-workers=8 \
-            --continue -Dorg.gradle.jvmargs=-Xms2g -Dorg.gradle.jvmargs=-Xmx6g \
-            -Dorg.gradle.vfs.watch=false -Pdocker-pull-licenses
+          gradle-command: :sdks:java:javadoc:aggregateJavadoc
+      # - name: deploy Javadoc
+      #   uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     project: gradle
+      #     javadoc-branch: javadoc
+      #     target-folder: src/sdks/java/javadoc/build/docs/javadoc 
+      #     custom-command: |
+      #       ./gradlew :sdks:java:javadoc:aggregateJavadoc --max-workers=8 \
+      #       --continue -Dorg.gradle.jvmargs=-Xms2g -Dorg.gradle.jvmargs=-Xmx6g \
+      #       -Dorg.gradle.vfs.watch=false -Pdocker-pull-licenses
