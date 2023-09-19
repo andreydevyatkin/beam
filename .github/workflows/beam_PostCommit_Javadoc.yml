@@ -34,7 +34,7 @@ permissions:
   actions: write
   pull-requests: read
   checks: read
-  contents: read
+  contents: write
   deployments: read
   id-token: write
   issues: read
