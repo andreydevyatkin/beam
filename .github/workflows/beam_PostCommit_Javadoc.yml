@@ -34,13 +34,13 @@ permissions:
   actions: write
   pull-requests: read
   checks: read
-  contents: write
+  contents: read
   deployments: read
-  id-token: write
+  id-token: none
   issues: read
   discussions: read
   packages: read
-  pages: write
+  pages: read
   repository-projects: read
   security-events: read
   statuses: read
@@ -75,43 +75,8 @@ jobs:
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
           gradle-command: :sdks:java:javadoc:aggregateJavadoc
-      - name: Set Javadoc report path
-        id: javadoc_report_path
-        run: |
-          echo "path=sdks/java/javadoc/build/docs/javadoc" >> $GITHUB_OUTPUT
-      # - name: Upload Javadoc Results
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: Javadoc Results
-      #     path: '**/${{ steps.javadoc_report_path.outputs.path }}/**'
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      # - name: Get Job ID
-      #   id: run_details
-      #   shell: bash
-      #   run: | 
-      #     URL="${{github.api_url}}/repos/${{github.repository}}/actions/runs/${{github.run_id}}/jobs"
-      #     JOB_ID=$(curl  \
-      #     -H 'Authorization: Bearer ${{secrets.GITHUB_TOKEN}}' \
-      #     -H "Accept: application/vnd.github+json" \
-      #     -H "X-GitHub-Api-Version: 2022-11-28" \
-      #     -s $URL | jq -r '.jobs | .[] | select(.name=="${{github.job}}") | .id ')
-      #     echo "job_id=$JOB_ID" >> $GITHUB_OUTPUT
-      - name: Upload Javadoc Results to GitHub Pages
-        uses: actions/upload-pages-artifact@v2
+      - name: Upload Javadoc Results
+        uses: actions/upload-artifact@v3
         with:
-          path: '${{ github.workspace }}/${{ steps.javadoc_report_path.outputs.path }}'
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          destination_dir: ${{ github.run_id }}
-
-      # - name: Deploy to GitHub Pages
-      #   id: deployment
-      #   uses: actions/deploy-pages@v2
-      #   with:
-      #     timeout: 600000
-      # - name: GitHub Page url
-      #   run: |
-      #     echo "path=${{ steps.deployment.outputs.page_url }}" >> $GITHUB_OUTPUT  
+          name: Javadoc Results
+          path: '**/sdks/java/javadoc/build/docs/javadoc/**'
