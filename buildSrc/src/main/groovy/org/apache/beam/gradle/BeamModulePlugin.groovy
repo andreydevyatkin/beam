@@ -1247,11 +1247,14 @@ class BeamModulePlugin implements Plugin<Project> {
 
       project.jacocoTestReport {
         doFirst {
-          getClassDirectories().setFrom(project.files(project.fileTree(
-                dir: "${project.rootDir}",
-                includes: configuration.jacocoIncludes,
-                excludes: configuration.jacocoExcludes
-          )))
+          getClassDirectories().setFrom(project.files(
+              project.fileTree(
+              dir: "${project.rootDir}",
+              includes: configuration.jacocoIncludes,
+              excludes: configuration.jacocoExcludes
+              )
+              )
+              )
         }
         reports {
           xml.enabled true
