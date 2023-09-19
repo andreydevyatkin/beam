@@ -70,7 +70,5 @@ runs:
       shell: bash
       run: |
         echo KUBELET_GCLOUD_CONFIG_PATH=/var/lib/kubelet/pods/$POD_UID/volumes/kubernetes.io~empty-dir/gcloud >> $GITHUB_ENV
-    - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
-      with:
-        cache-read-only: false
+    - name: Setup environment
+      uses: ./.github/actions/setup-environment-action
