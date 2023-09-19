@@ -96,7 +96,7 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           -s $URL | jq -r '.jobs | .[] | select(.name=="${{github.job}}") | .id ')
-          echo job_id=$JOB_ID >> $GITHUB_OUTPUT
+          echo "job_id=$JOB_ID" >> $GITHUB_OUTPUT
       - name: Upload Javadoc Results to GitHub Pages
         uses: actions/upload-pages-artifact@v2
         with:
