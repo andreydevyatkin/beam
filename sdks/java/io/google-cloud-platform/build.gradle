@@ -25,6 +25,8 @@ applyJavaNature(
   classesTriggerCheckerBugs: [
     'PubSubPayloadTranslation': 'https://github.com/typetools/checker-framework/issues/3791',
   ],
+  jacocoIncludes: ['**/org/apache/beam/sdk/io/gcp/**'],
+  jacocoExcludes: ['**/AutoValue_*'],
 )
 
 description = "Apache Beam :: SDKs :: Java :: IO :: Google Cloud Platform"
