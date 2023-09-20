@@ -35,7 +35,8 @@ spec:
           effect: "NoSchedule"
       %{~ endif ~}
       image: ${image}
-      repository: "andreydevyatkin/beam"
+      organization: ${organization}
+      group: "${group}"
       labels:
       %{~ for label in labels ~}
         - ${label}
