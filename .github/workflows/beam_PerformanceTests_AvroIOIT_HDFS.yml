@@ -89,7 +89,7 @@ jobs:
           echo hadoop_IP=$loadbalancer_IP >> $GITHUB_OUTPUT
       - name: Prepare test arguments
         id: test_arguments
-        uses: actions/hello-world-composite-action@v1
+        uses: ./.github/actions/setup-test-arguments-action
         with:
           arguments: |
             "--filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_",
