@@ -16,7 +16,6 @@
 # limitations under the License.
 ###############################################################################
 "--runner=DataflowRunner",
-"--project=apache-beam-testing",
 "--tempRoot=gs://temp-storage-for-perf-tests",
 "--bigQueryDataset=beam_performance",
 "--bigQueryTable=avroioit_hdfs_results",
@@ -25,6 +24,4 @@
 "--expectedHash=2f9f5ca33ea464b25109c0297eb6aecb",
 "--datasetSize=1089730000",
 "--numWorkers=5",
-"--autoscalingAlgorithm=NONE",
-"--influxDatabase=beam_test_metrics",
-"--influxHost=http://10.128.0.96:8086",
+"--autoscalingAlgorithm=NONE"
