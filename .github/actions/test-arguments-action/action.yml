@@ -48,9 +48,9 @@ runs:
       shell: bash
       run: |
         DEFAULT_ARGUMENTS=$(echo '
-          "--project=apache-beam-testing"
+          "--project=apache-beam-testing",
           "--influxDatabase=beam_test_metrics",
-          "--influxHost=http://10.128.0.96:8086"
+          "--influxHost=http://10.128.0.96:8086"'
         )
         echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
     - name: Get default Python test arguments
@@ -58,14 +58,14 @@ runs:
       shell: bash
       run: |
         DEFAULT_ARGUMENTS=$(echo '
-          "--project=apache-beam-testing"
+          "--project=apache-beam-testing",
           "--influx_db_name=beam_test_metrics",
-          "--influx_hostname=http://10.128.0.96:8086"
+          "--influx_hostname=http://10.128.0.96:8086"'
         )
         echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
       run: |
         CONFIG=$(grep -v "^#.*" ${{ inputs.config-file-path }})
-        ARGUMENTS=$(echo '${{ env.DEFAULT_ARGUMENTS }}, ${{ inputs.arguments }}' $CONFIG | tr '\n' ' ')
+        ARGUMENTS=$(echo '${{ env.DEFAULT_ARGUMENTS }}, ${{ inputs.arguments }},' $CONFIG | tr '\n' ' ')
         echo arguments=$ARGUMENTS >> $GITHUB_OUTPUT
