@@ -69,12 +69,14 @@ jobs:
           comment_phrase: ${{ matrix.job_phrase }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_job: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-      - name: Prepare config
-        id: set_config
-        shell: bash
-        run: |
-          CURCONFIG=$(grep -v "^#.*" ./.github/workflows/performance-tests-job-configs/config_AvroIOIT.txt | tr '\n' ' ')
-          echo "prepared_config=$CURCONFIG" >> $GITHUB_OUTPUT
+      - name: Prepare test arguments
+        id: test_arguments
+        uses: ./.github/actions/test-arguments-action
+        with:
+          config-file-path: ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT.txt
+          java-test: true
+          arguments: |
+            "--filenamePrefix=gs://temp-storage-for-perf-tests/${{ matrix.job_name }}/${{github.run_id}}/"
       - name: run integrationTest
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
@@ -84,4 +86,4 @@ jobs:
             --info \
             -Dfilesystem=gcs \
             -DintegrationTestRunner=dataflow \
-            -DintegrationTestPipelineOptions='[${{ steps.set_config.outputs.prepared_config }}"--filenamePrefix=gs://temp-storage-for-perf-tests/${{ matrix.job_name }}/${{github.run_id}}/"]' \
+            -DintegrationTestPipelineOptions='[${{ steps.test_arguments.outputs.arguments }}]' \
