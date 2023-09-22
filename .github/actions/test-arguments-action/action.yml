@@ -51,7 +51,7 @@ runs:
       if: ${{ inputs.java-test == 'true' }}
       shell: bash
       run: |
-        DEFAULT_ARGUMENTS=$(echo '
+        DEFAULT_ARGUMENTS=$(echo $'
           --project=apache-beam-testing
           --influxDatabase=beam_test_metrics
           --influxHost=http://10.128.0.96:8086
@@ -61,7 +61,7 @@ runs:
       if: ${{ inputs.python-test == 'true' }}
       shell: bash
       run: |
-        DEFAULT_ARGUMENTS=$(echo '
+        DEFAULT_ARGUMENTS=$(echo $'
           --project=apache-beam-testing
           --influx_db_name=beam_test_metrics
           --influx_hostname=http://10.128.0.96:8086
@@ -71,7 +71,7 @@ runs:
       shell: bash
       run: |
         CONFIG=$(grep -v "^#.*" ${{ inputs.argument-paths }})
-        ARGUMENTS=$(echo '${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }}' $CONFIG)
+        ARGUMENTS=$(echo $'${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }}' $CONFIG)
         echo ARGUMENTS=$ARGUMENTS >> $GITHUB_ENV
     - name: Prepare arguments for the performance test
       if: ${{ inputs.test-type == 'performance' }}
