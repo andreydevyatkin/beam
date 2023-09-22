@@ -71,8 +71,8 @@ runs:
       shell: bash
       run: |
         CONFIG=$(grep -v "^#.*" ${{ inputs.argument-paths }})
-        ARGUMENTS=$(echo "${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }}" $CONFIG)
-        echo "ARGUMENTS=$ARGUMENTS" >> $GITHUB_ENV
+        ARGUMENTS=$(echo '${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }}' $CONFIG)
+        echo ARGUMENTS="$ARGUMENTS" >> $GITHUB_ENV
     - name: Prepare arguments for the performance test
       if: ${{ inputs.test-type == 'performance' }}
       shell: bash
