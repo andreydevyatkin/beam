@@ -91,11 +91,12 @@ jobs:
         id: test_arguments
         uses: ./.github/actions/test-arguments-action
         with:
-          config-file-path: ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS.txt
+          test-type: performance
           java-test: true
+          argument-paths: ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS.txt
           arguments: |
-            "--filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_",
-            "--hdfsConfiguration=[{\"fs.defaultFS\":\"hdfs:${{ steps.install_hadoop.outputs.hadoop_IP }}:9000\",\"dfs.replication\":1}]"
+            --filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_
+            --hdfsConfiguration=[{\"fs.defaultFS\":\"hdfs:${{ steps.install_hadoop.outputs.hadoop_IP }}:9000\",\"dfs.replication\":1}]
       - name: run integrationTest
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:

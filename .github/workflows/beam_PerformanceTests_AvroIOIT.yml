@@ -73,10 +73,11 @@ jobs:
         id: test_arguments
         uses: ./.github/actions/test-arguments-action
         with:
-          config-file-path: ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT.txt
+          test-type: performance
           java-test: true
+          argument-paths: ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT.txt
           arguments: |
-            "--filenamePrefix=gs://temp-storage-for-perf-tests/${{ matrix.job_name }}/${{github.run_id}}/"
+            --filenamePrefix=gs://temp-storage-for-perf-tests/${{ matrix.job_name }}/${{github.run_id}}/
       - name: run integrationTest
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:

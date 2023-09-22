@@ -15,17 +15,21 @@
 # specific language governing permissions and limitations
 # under the License.
 
-name: 'Setup Integration Tests action'
-description: 'Setup Integration Tests action'
+name: 'Set test arguments action'
+description: 'Set test arguments action to run the test'
 inputs:
-  config-file-path:
+  argument-paths:
     required: true
-    description: 'Test config file path'
+    description: 'List of paths to files with arguments for tests'
     default: ''
   arguments:
     required: false
     description: 'Test arguments'
     default: ''
+  test-type:
+    required: true
+    description: 'Specify if this is a "load" or "performance" test'
+    default: 'load'
   java-test:
     required: true
     description: 'Type "true" if this is a Java test'
@@ -48,24 +52,40 @@ runs:
       shell: bash
       run: |
         DEFAULT_ARGUMENTS=$(echo '
-          "--project=apache-beam-testing",
-          "--influxDatabase=beam_test_metrics",
-          "--influxHost=http://10.128.0.96:8086"'
-        )
+          --project=apache-beam-testing
+          --influxDatabase=beam_test_metrics
+          --influxHost=http://10.128.0.96:8086
+        ')
         echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
     - name: Get default Python test arguments
       if: ${{ inputs.python-test == 'true' }}
       shell: bash
       run: |
         DEFAULT_ARGUMENTS=$(echo '
-          "--project=apache-beam-testing",
-          "--influx_db_name=beam_test_metrics",
-          "--influx_hostname=http://10.128.0.96:8086"'
-        )
+          --project=apache-beam-testing
+          --influx_db_name=beam_test_metrics
+          --influx_hostname=http://10.128.0.96:8086
+        ')
         echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
+    - name: Group arguments
+      shell: bash
+      run: |
+        CONFIG=$(grep -v "^#.*" ${{ inputs.argument-paths }})
+        ARGUMENTS=$(echo ${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }} $CONFIG)
+        echo ARGUMENTS=$ARGUMENTS >> $GITHUB_ENV
+    - name: Prepare arguments for the performance test
+      if: ${{ inputs.test-type == 'performance' }}
+      shell: bash
+      run: |
+        ARGUMENTS=""
+        for arg in "${{ env.ARGUMENTS }}"; do
+          while read -r line; do
+            ARGUMENTS="${ARGUMENTS}\"${line}\","$'\n'
+          done <<< "$arg"
+        done
+        echo ARGUMENTS=$ARGUMENTS >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
       run: |
-        CONFIG=$(grep -v "^#.*" ${{ inputs.config-file-path }})
-        ARGUMENTS=$(echo '${{ env.DEFAULT_ARGUMENTS }}, ${{ inputs.arguments }},' $CONFIG | tr '\n' ' ')
+        ARGUMENTS=$(echo ${{ env.ARGUMENTS }} | tr '\n' ' ')
         echo arguments=$ARGUMENTS >> $GITHUB_OUTPUT
