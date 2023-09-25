@@ -80,8 +80,8 @@ runs:
         echo ${{ env.ARGUMENTS }}
         ARGUMENTS=""
         while IFS=" " read -r arg; do
-          echo 
-          ARGUMENTS="$ARGUMENTS\"${arg}\", "
+          echo $arg
+          ARGUMENTS="$ARGUMENTS\"$arg\", "
         done <<< ${{ env.ARGUMENTS }}
         echo ARGUMENTS=$ARGUMENTS >> $GITHUB_ENV
     - id: test_arguments
