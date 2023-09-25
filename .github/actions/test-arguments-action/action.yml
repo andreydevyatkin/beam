@@ -51,7 +51,11 @@ runs:
       if: ${{ inputs.java-test == 'true' }}
       shell: bash
       run: |
-        DEFAULT_ARGUMENTS=$(echo "--project=apache-beam-testing --influxDatabase=beam_test_metrics --influxHost=http://10.128.0.96:8086")
+        DEFAULT_ARGUMENTS=$(echo "
+          --project=apache-beam-testing
+          --influxDatabase=beam_test_metrics
+          --influxHost=http://10.128.0.96:8086
+        ")
         echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
     - name: Get default Python test arguments
       if: ${{ inputs.python-test == 'true' }}
@@ -73,9 +77,8 @@ runs:
       if: ${{ inputs.test-type == 'performance' }}
       shell: bash
       run: |
-        echo ${{ env.ARGUMENTS }}
         args=${{ env.ARGUMENTS }}
-        result=$(echo "$args" | awk -v RS="[ ]" '{print "$0"}')
+        result=$(echo "$args" | awk -v OFS=", " '{$1=$1; print "\"" $0 "\""}')
         echo ARGUMENTS="$result" >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
