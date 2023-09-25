@@ -51,12 +51,11 @@ runs:
       if: ${{ inputs.java-test == 'true' }}
       shell: bash
       run: |
-        DEFAULT_ARGUMENTS=$(echo "
+        echo DEFAULT_ARGUMENTS="
           --project=apache-beam-testing
           --influxDatabase=beam_test_metrics
           --influxHost=http://10.128.0.96:8086
-        ")
-        echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
+        " >> $GITHUB_ENV
     - name: Get default Python test arguments
       if: ${{ inputs.python-test == 'true' }}
       shell: bash
@@ -72,13 +71,12 @@ runs:
       run: |
         echo "${{ env.DEFAULT_ARGUMENTS }}"
         CONFIG=$(grep -v "^#.*" ${{ inputs.argument-paths }})
-        ARGUMENTS=$(echo '"${{ env.DEFAULT_ARGUMENTS }}" ${{ inputs.arguments }}' $CONFIG)
-        echo ARGUMENTS="$ARGUMENTS" >> $GITHUB_ENV
+        echo ARGUMENTS="${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }} $CONFIG" >> $GITHUB_ENV
     - name: Prepare arguments for the performance test
       if: ${{ inputs.test-type == 'performance' }}
       shell: bash
       run: |
-        echo ${{ env.ARGUMENTS }}
+        echo "${{ env.ARGUMENTS }}"
         ARGUMENTS=""
         while read -r line; do
           ARGUMENTS="${ARGUMENTS}\"${line}\","$'\n'
