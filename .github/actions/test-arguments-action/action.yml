@@ -75,7 +75,7 @@ runs:
       run: |
         echo ${{ env.ARGUMENTS }}
         args=${{ env.ARGUMENTS }}
-        result=$(echo "$args" | awk -v RS="[ ]" '{print "\"" $0 "\""}')
+        result=$(echo "$args" | awk -v RS="[ ]" '{print "$0"}')
         echo ARGUMENTS="$result" >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
