@@ -74,14 +74,15 @@ runs:
       shell: bash
       run: |
         echo ${{ env.ARGUMENTS }}
-        ARGUMENTS=""
-        while IFS=" " read -r arg; do
+        result=""
+        while read -r arg; do
           echo $arg
-          ARGUMENTS="$ARGUMENTS\"$arg\", "
+          result="$result\"$arg\", "
         done <<< ${{ env.ARGUMENTS }}
-        echo ARGUMENTS=$ARGUMENTS >> $GITHUB_ENV
+        echo ARGUMENTS="$result" >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
       run: |
+        echo "from test_arguments"
         echo ${{ env.ARGUMENTS }}
         echo arguments=$ARGUMENTS >> $GITHUB_OUTPUT
