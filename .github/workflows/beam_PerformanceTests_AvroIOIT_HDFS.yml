@@ -47,10 +47,10 @@ env:
   GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
   GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GE_CACHE_USERNAME }}
   GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GE_CACHE_PASSWORD }}
-  beam_PerformanceTests_AvroIOIT_HDFS_performance_test_arguments_1: ''
+  beam_PerformanceTests_AvroIOIT_HDFS_test_arguments_1: ''
 
 jobs:
-  beam_PerformanceTests_AvroIOIT_HDFS:
+  beam_Tests_AvroIOIT_HDFS:
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule' ||
@@ -85,7 +85,7 @@ jobs:
         id: install_hadoop
         run: |
           kubectl apply -f ${{ github.workspace }}/.test-infra/kubernetes/hadoop/LargeITCluster/hdfs-multi-datanode-cluster.yml
-          kubectl wait svc/hadoop --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' --timeout=120s
+          kubectl wait svc/hadoop --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' --timeout=60s
           loadbalancer_IP=$(kubectl get svc hadoop -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
           echo hadoop_IP=$loadbalancer_IP >> $GITHUB_OUTPUT
       - name: Prepare test arguments
@@ -96,9 +96,11 @@ jobs:
           java-test: true
           argument-paths: |
             ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS.txt
+            ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS_1.txt
           arguments: |
             --filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_
             --hdfsConfiguration=[{\"fs.defaultFS\":\"hdfs:${{ steps.install_hadoop.outputs.hadoop_IP }}:9000\",\"dfs.replication\":1}]
+            --job_name=load-tests-go-dataflow-batch-pardo-$(date '+%m%d%H%M%S' --utc)
       - name: run integrationTest
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
@@ -108,4 +110,4 @@ jobs:
             --info \
             -Dfilesystem=hdfs \
             -DintegrationTestRunner=dataflow \
-            -DintegrationTestPipelineOptions='[${{ env.beam_PerformanceTests_AvroIOIT_HDFS_performance_test_arguments_1 }}]' \
+            -DintegrationTestPipelineOptions='[${{ env.beam_PerformanceTests_AvroIOIT_HDFS_test_arguments_1 }}]' \

@@ -59,7 +59,7 @@ runs:
         ")
         echo DEFAULT_ARGUMENTS="$DEFAULT_ARGUMENTS" >> $GITHUB_ENV
     - name: Get default Python test arguments
-      if: ${{ inputs.python-test == 'true' }}
+      if: ${{ inputs.python-test == 'true' || inputs.go-test == 'true' }}
       shell: bash
       run: |
         DEFAULT_ARGUMENTS=$(echo "
@@ -71,12 +71,11 @@ runs:
     - name: Group arguments
       shell: bash
       run: |
-        PATHS=$(echo "${{ inputs.argument-paths }}" | tr '\n' ' ')
-        read -ra paths <<< "$PATHS"
-        for index in "${!paths[@]}"; do
-          CONFIG=$(grep -v "^#.*" ${paths[index]})
+        PATHS=($(echo "${{ inputs.argument-paths }}" | tr '\n' ' '))
+        for index in "${!PATHS[@]}"; do
+          CONFIG=$(grep -v "^#.*" ${PATHS[index]})
           ARGUMENTS=$(echo "${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }} $CONFIG" | tr '\n' ' ')
-          ARGUMENTS="${ARGUMENTS% }"
+          ARGUMENTS="${ %ARGUMENTS% }"
           if ${{ inputs.test-type == 'performance' }}; then
             arguments=""
             read -ra args <<< "$ARGUMENTS"
@@ -85,5 +84,5 @@ runs:
             done
             ARGUMENTS="${arguments%,}"
           fi
-          echo "${{ github.job }}_${{ inputs.test-type }}_test_arguments_$((index + 1))"="$ARGUMENTS" >> $GITHUB_ENV
-        done       
+          echo "${{ github.job }}_test_arguments_$((index + 1))"="$ARGUMENTS" >> $GITHUB_ENV
+        done
