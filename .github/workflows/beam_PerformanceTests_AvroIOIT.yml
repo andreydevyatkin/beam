@@ -19,7 +19,7 @@ on:
   issue_comment:
     types: [created]
   schedule:
-    - cron: '0 0/12 * * *'
+    - cron: '10 1/13 * * *'
   workflow_dispatch:
 
 #Setting explicit permissions for the action to avoid the default permissions which are `write-all` in case of pull_request_target event
@@ -74,8 +74,9 @@ jobs:
         uses: ./.github/actions/test-arguments-action
         with:
           test-type: performance
-          java-test: true
-          argument-paths: ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT.txt
+          test-language: java
+          argument-file-paths: |
+            ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT.txt
           arguments: |
             --filenamePrefix=gs://temp-storage-for-perf-tests/${{ matrix.job_name }}/${{github.run_id}}/
       - name: run integrationTest

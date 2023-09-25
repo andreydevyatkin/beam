@@ -14,8 +14,6 @@
 #  See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-
 --runner=DataflowRunner
 --tempRoot=gs://temp-storage-for-perf-tests
 --bigQueryDataset=beam_performance
@@ -26,4 +24,3 @@
 --datasetSize=1089730000
 --numWorkers=5
 --autoscalingAlgorithm=NONE
-
