@@ -85,16 +85,5 @@ runs:
             ARGUMENTS="${arguments%, }"
           fi
           echo "${{ github.job }}_${{ inputs.test-type }}_test_arguments_$((index + 1))"="$ARGUMENTS" >> $GITHUB_ENV
+          unset DEFAULT_ARGUMENTS
         done       
-    # - name: Prepare arguments for the performance test
-    #   if: ${{ inputs.test-type == 'performance' }}
-    #   shell: bash
-    #   run: |
-    #     ARGUMENTS=""
-    #     read -ra args <<< "${{ env.ARGUMENTS }}"
-    #     for arg in "${args[@]}"; do
-    #       ARGUMENTS="${ARGUMENTS}\"${arg}\","
-    #     done
-    #     ARGUMENTS="${ARGUMENTS%, }"
-    #     echo "$ARGUMENTS"
-    #     echo arguments="$ARGUMENTS" >> $GITHUB_OUTPUT
