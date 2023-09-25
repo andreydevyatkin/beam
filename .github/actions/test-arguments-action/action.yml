@@ -80,11 +80,9 @@ runs:
       run: |
         echo ${{ env.ARGUMENTS }}
         ARGUMENTS=""
-      # for arg in "${{ env.ARGUMENTS }}"; do
         while read -r line; do
           ARGUMENTS="${ARGUMENTS}\"${line}\","$'\n'
-        done <<< "${{ env.ARGUMENTS }}"
-      # done
+        done <<< ${{ env.ARGUMENTS }}
         echo ARGUMENTS="$ARGUMENTS" >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
