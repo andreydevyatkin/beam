@@ -61,11 +61,11 @@ runs:
       if: ${{ inputs.python-test == 'true' }}
       shell: bash
       run: |
-        DEFAULT_ARGUMENTS="
+        DEFAULT_ARGUMENTS=$(echo "
           --project=apache-beam-testing
           --influx_db_name=beam_test_metrics
           --influx_hostname=http://10.128.0.96:8086
-        "
+        ")
         echo DEFAULT_ARGUMENTS="$DEFAULT_ARGUMENTS" >> $GITHUB_ENV
     - name: Group arguments
       shell: bash
@@ -77,11 +77,12 @@ runs:
     - name: Prepare arguments for the performance test
       if: ${{ inputs.test-type == 'performance' }}
       shell: bash
-      run: |     
+      run: |
         ARGUMENTS=""
         read -ra args <<< "${{ env.ARGUMENTS }}"
         for arg in "${args[@]}"; do
-          ARGUMENTS="${ARGUMENTS}\"${arg}\", "
+          ARGUMENTS="${ARGUMENTS}\"${arg}\","
         done
         ARGUMENTS="${ARGUMENTS%, }"
+        echo "$ARGUMENTS"
         echo arguments="$ARGUMENTS" >> $GITHUB_OUTPUT
