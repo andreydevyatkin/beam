@@ -88,5 +88,4 @@ runs:
       shell: bash
       run: |
         echo ${{ env.ARGUMENTS }}
-      # ARGUMENTS=$(echo "${{ env.ARGUMENTS }}" | tr '\n' ' ')
         echo arguments=$ARGUMENTS >> $GITHUB_OUTPUT
