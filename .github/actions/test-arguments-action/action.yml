@@ -84,5 +84,5 @@ runs:
           ARGUMENTS="${ARGUMENTS}\"${arg}\","
         done
         ARGUMENTS="${ARGUMENTS%, }"
-        echo "$ARGUMENTS"
+        echo ARGUMENTS=$ARGUMENTS >> $GITHUB_ENV
         echo arguments="$ARGUMENTS" >> $GITHUB_OUTPUT
