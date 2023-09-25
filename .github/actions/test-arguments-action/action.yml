@@ -38,34 +38,39 @@ inputs:
     required: true
     description: 'Type "true" if this is a Python test'
     default: 'false'
+  go-test:
+    required: true
+    description: 'Type "true" if this is a Go test'
+    default: 'false'
 
 runs:
   using: composite
   steps:
     - name: Set common arguments
+      id: common_arguments
       shell: bash
       run: |
-        echo PROJECT="apache-beam-testing" >> $GITHUB_ENV
-        echo INFLUX_DATABSE="beam_test_metrics" >> $GITHUB_ENV
-        echo INFLUX_HOST="http://10.128.0.96:8086" >> $GITHUB_ENV
+        echo project="apache-beam-testing" >> $GITHUB_OUTPUT
+        echo influx_db_name="beam_test_metrics" >> $GITHUB_OUTPUT
+        echo influx_host="http://10.128.0.96:8086" >> $GITHUB_OUTPUT
     - name: Get default Java test arguments
       if: ${{ inputs.java-test == 'true' }}
       shell: bash
       run: |
         DEFAULT_ARGUMENTS=$(echo "
-          --project=${{ env.PROJECT }}
-          --influxDatabase=${{ env.INFLUX_DATABSE }}
-          --influxHost=${{ env.INFLUX_HOST }}
+          --project=${{ steps.common_arguments.outputs.project }}
+          --influxDatabase=${{ steps.common_arguments.outputs.influx_db_name }}
+          --influxHost=${{ steps.common_arguments.outputs.influx_host }}
         ")
         echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
-    - name: Get default Python test arguments
+    - name: Get default test arguments
       if: ${{ inputs.python-test == 'true' || inputs.go-test == 'true' }}
       shell: bash
       run: |
         DEFAULT_ARGUMENTS=$(echo "
-          --project=${{ env.PROJECT }}
-          --influx_db_name=${{ env.INFLUX_DATABSE }}
-          --influx_hostname=${{ env.INFLUX_HOST }}
+          --project=${{ steps.common_arguments.outputs.project }}
+          --influx_db_name=${{ steps.common_arguments.outputs.influx_db_name }}
+          --influx_hostname=${{ steps.common_arguments.outputs.influx_host }}
         ")
         echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
     - name: Group arguments
@@ -84,5 +89,5 @@ runs:
             done
             ARGUMENTS="${arguments%,}"
           fi
-          echo ${{ github.job }}_test_arguments_$((index + 1))=$ARGUMENTS >> $GITHUB_ENV
+          echo "${{ github.job }}_test_arguments_$((index + 1))=$ARGUMENTS" >> $GITHUB_ENV
         done
