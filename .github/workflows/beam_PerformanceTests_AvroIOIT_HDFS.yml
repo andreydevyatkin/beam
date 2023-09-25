@@ -92,7 +92,6 @@ jobs:
         id: test_arguments
         uses: ./.github/actions/test-arguments-action
         with:
-          test-type: performance
           test-language: java
           argument-paths: |
             ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS.txt
