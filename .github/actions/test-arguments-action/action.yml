@@ -72,7 +72,8 @@ runs:
       run: |
         CONFIG=$(grep -v "^#.*" ${{ inputs.argument-paths }})
         ARGUMENTS=$(echo "${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }} $CONFIG" | tr '\n' ' ')
-        echo ARGUMENTS=$ARGUMENTS >> $GITHUB_ENV
+        ARGUMENTS="${ARGUMENTS% }"
+        echo arguments=$ARGUMENTS >> $GITHUB_OUTPUT
     - name: Prepare arguments for the performance test
       if: ${{ inputs.test-type == 'performance' }}
       shell: bash
@@ -82,10 +83,5 @@ runs:
         for arg in "${args[@]}"; do
           ARGUMENTS="${ARGUMENTS}\"${arg}\", "
         done
-        echo ARGUMENTS="$ARGUMENTS" >> $GITHUB_ENV
-    - id: test_arguments
-      shell: bash
-      run: |
-        echo "from test_arguments"
-        echo ${{ env.ARGUMENTS }}
-        echo arguments=$ARGUMENTS >> $GITHUB_OUTPUT
+        ARGUMENTS="${ARGUMENTS%, }"
+        echo arguments="$ARGUMENTS" >> $GITHUB_OUTPUT
