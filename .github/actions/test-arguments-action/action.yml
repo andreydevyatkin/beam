@@ -74,11 +74,7 @@ runs:
       shell: bash
       run: |
         echo ${{ env.ARGUMENTS }}
-        result=""
-        while read -r arg; do
-          echo $arg
-          result="$result\"$arg\", "
-        done <<< ${{ env.ARGUMENTS }}
+        result=$(echo "${{ env.ARGUMENTS }}" | awk -v RS="[ ]" '{print "\"" $0 "\""}')
         echo ARGUMENTS="$result" >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
