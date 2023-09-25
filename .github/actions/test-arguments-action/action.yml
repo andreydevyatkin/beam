@@ -30,18 +30,10 @@ inputs:
     required: true
     description: 'Specify if this is a "load" or "performance" test'
     default: 'load'
-  java-test:
+  test-language:
     required: true
-    description: 'Type "true" if this is a Java test'
-    default: 'false'
-  python-test:
-    required: true
-    description: 'Type "true" if this is a Python test'
-    default: 'false'
-  go-test:
-    required: true
-    description: 'Type "true" if this is a Go test'
-    default: 'false'
+    description: 'Specify if this is a "java", "python" or "go" test'
+    default: 'java'
 
 runs:
   using: composite
@@ -53,33 +45,32 @@ runs:
         echo project="apache-beam-testing" >> $GITHUB_OUTPUT
         echo influx_db_name="beam_test_metrics" >> $GITHUB_OUTPUT
         echo influx_host="http://10.128.0.96:8086" >> $GITHUB_OUTPUT
-    - name: Get default Java test arguments
-      if: ${{ inputs.java-test == 'true' }}
+    - name: Get default ${{ inputs.test-language } test arguments
+      id: default_arguments
       shell: bash
       run: |
-        DEFAULT_ARGUMENTS=$(echo "
-          --project=${{ steps.common_arguments.outputs.project }}
-          --influxDatabase=${{ steps.common_arguments.outputs.influx_db_name }}
-          --influxHost=${{ steps.common_arguments.outputs.influx_host }}
-        ")
-        echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
-    - name: Get default test arguments
-      if: ${{ inputs.python-test == 'true' || inputs.go-test == 'true' }}
-      shell: bash
-      run: |
-        DEFAULT_ARGUMENTS=$(echo "
-          --project=${{ steps.common_arguments.outputs.project }}
-          --influx_db_name=${{ steps.common_arguments.outputs.influx_db_name }}
-          --influx_hostname=${{ steps.common_arguments.outputs.influx_host }}
-        ")
-        echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
+        DEFAULT_ARGUMENTS=""
+        if ${{ inputs.test-language == 'java' }}; then
+          DEFAULT_ARGUMENTS=$(echo "
+            --project=${{ steps.common_arguments.outputs.project }}
+            --influxDatabase=${{ steps.common_arguments.outputs.influx_db_name }}
+            --influxHost=${{ steps.common_arguments.outputs.influx_host }}
+          ")
+        elif ${{ inputs.test-language == 'python' || inputs.test-language == 'go' }}; then
+          DEFAULT_ARGUMENTS=$(echo "
+            --project=${{ steps.common_arguments.outputs.project }}
+            --influx_db_name=${{ steps.common_arguments.outputs.influx_db_name }}
+            --influx_hostname=${{ steps.common_arguments.outputs.influx_host }}
+          ")
+        fi
+        echo arguments=$DEFAULT_ARGUMENTS >> $GITHUB_OUTPUT
     - name: Group arguments
       shell: bash
       run: |
         PATHS=($(echo "${{ inputs.argument-paths }}" | tr '\n' ' '))
         for index in "${!PATHS[@]}"; do
           CONFIG=$(grep -v "^#.*" ${PATHS[index]})
-          ARGUMENTS=$(echo "${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }} $CONFIG" | tr '\n' ' ')
+          ARGUMENTS=$(echo "${{ steps.default_arguments.outputs.arguments }} ${{ inputs.arguments }} $CONFIG" | tr '\n' ' ')
           ARGUMENTS="${ARGUMENTS% }"
           if ${{ inputs.test-type == 'performance' }}; then
             arguments=""
