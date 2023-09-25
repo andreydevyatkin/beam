@@ -39,14 +39,15 @@ inputs:
     description: 'Type "true" if this is a Python test'
     default: 'false'
 
-env:
-  PROJECT: apache-beam-testing
-  INFLUX_DATABSE: beam_test_metrics
-  INFLUX_HOST: http://10.128.0.96:8086
-
 runs:
   using: composite
   steps:
+    - name: Set common arguments
+      shell: bash
+      run: |
+        echo PROJECT="apache-beam-testing" >> $GITHUB_ENV
+        echo INFLUX_DATABSE="beam_test_metrics" >> $GITHUB_ENV
+        echo INFLUX_HOST="http://10.128.0.96:8086" >> $GITHUB_ENV
     - name: Get default Java test arguments
       if: ${{ inputs.java-test == 'true' }}
       shell: bash
