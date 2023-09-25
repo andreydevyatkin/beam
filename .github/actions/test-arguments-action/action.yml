@@ -75,7 +75,7 @@ runs:
         for index in "${!PATHS[@]}"; do
           CONFIG=$(grep -v "^#.*" ${PATHS[index]})
           ARGUMENTS=$(echo "${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }} $CONFIG" | tr '\n' ' ')
-          ARGUMENTS="${ %ARGUMENTS% }"
+          ARGUMENTS="${ARGUMENTS% }"
           if ${{ inputs.test-type == 'performance' }}; then
             arguments=""
             read -ra args <<< "$ARGUMENTS"
