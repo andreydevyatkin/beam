@@ -96,11 +96,10 @@ jobs:
           java-test: true
           argument-paths: |
             ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS.txt
-            ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS_1.txt
           arguments: |
             --filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_
             --hdfsConfiguration=[{\"fs.defaultFS\":\"hdfs:${{ steps.install_hadoop.outputs.hadoop_IP }}:9000\",\"dfs.replication\":1}]
-            --job_name=load-tests-go-dataflow-batch-pardo-$(date'+%m%d%H%M%S'--utc)
+            --job_name=load-tests-go-dataflow-batch-pardo-$(date '+%m%d%H%M%S' --utc)
       - name: run integrationTest
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
