@@ -57,7 +57,7 @@ runs:
           --influxDatabase=${{ env.INFLUX_DATABSE }}
           --influxHost=${{ env.INFLUX_HOST }}
         ")
-        echo DEFAULT_ARGUMENTS="$DEFAULT_ARGUMENTS" >> $GITHUB_ENV
+        echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
     - name: Get default Python test arguments
       if: ${{ inputs.python-test == 'true' || inputs.go-test == 'true' }}
       shell: bash
@@ -67,7 +67,7 @@ runs:
           --influx_db_name=${{ env.INFLUX_DATABSE }}
           --influx_hostname=${{ env.INFLUX_HOST }}
         ")
-        echo DEFAULT_ARGUMENTS="$DEFAULT_ARGUMENTS" >> $GITHUB_ENV
+        echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
     - name: Group arguments
       shell: bash
       run: |
@@ -84,5 +84,5 @@ runs:
             done
             ARGUMENTS="${arguments%,}"
           fi
-          echo "${{ github.job }}_test_arguments_$((index + 1))"="$ARGUMENTS" >> $GITHUB_ENV
+          echo ${{ github.job }}_test_arguments_$((index + 1))=$ARGUMENTS >> $GITHUB_ENV
         done
