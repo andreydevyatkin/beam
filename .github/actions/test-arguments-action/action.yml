@@ -29,15 +29,27 @@ inputs:
   test-type:
     required: true
     description: 'Specify if this is a "load" or "performance" test'
-    default: 'load'
   test-language:
     required: true
     description: 'Specify if this is a "java", "python" or "go" test'
-    default: 'java'
 
 runs:
   using: composite
   steps:
+    - name: Check if test-type was provided
+      shell: bash
+      run: | 
+        if [ -z "${{ inputs.test-type }}" ]; then
+          echo "Test type was not provided"
+          exit 1
+        fi
+    - name: Check if test-language was provided
+      shell: bash
+      run: | 
+        if [ -z "${{ inputs.test-language }}" ]; then
+          echo "Test language was not provided"
+          exit 1
+        fi
     - name: Set common arguments
       id: common_arguments
       shell: bash
