@@ -45,7 +45,7 @@ runs:
         echo project="apache-beam-testing" >> $GITHUB_OUTPUT
         echo influx_db_name="beam_test_metrics" >> $GITHUB_OUTPUT
         echo influx_host="http://10.128.0.96:8086" >> $GITHUB_OUTPUT
-    - name: Get default ${{ inputs.test-language } test arguments
+    - name: Get default ${{ inputs.test-language }} test arguments
       id: default_arguments
       shell: bash
       run: |
