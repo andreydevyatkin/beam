@@ -76,10 +76,13 @@ runs:
     - name: Prepare arguments for the performance test
       if: ${{ inputs.test-type == 'performance' }}
       shell: bash
-      run: |
-        args="${{ env.ARGUMENTS }}"
-        result=$(echo "$args" | awk -v OFS=", " '{$1=$1; print "\"" $0 "\""}')
-        echo ARGUMENTS="$result" >> $GITHUB_ENV
+      run: |     
+        ARGUMENTS=""
+        read -ra args <<< "${{ env.ARGUMENTS }}"
+        for arg in "${args[@]}"; do
+          ARGUMENTS="${ARGUMENTS}\"${arg}\", "
+        done
+        echo ARGUMENTS="$ARGUMENTS" >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
       run: |
