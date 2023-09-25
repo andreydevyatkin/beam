@@ -70,9 +70,9 @@ runs:
     - name: Group arguments
       shell: bash
       run: |
-        echo ${{ env.DEFAULT_ARGUMENTS }}
+        echo "${{ env.DEFAULT_ARGUMENTS }}"
         CONFIG=$(grep -v "^#.*" ${{ inputs.argument-paths }})
-        ARGUMENTS=$(echo '${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }}' $CONFIG)
+        ARGUMENTS=$(echo '"${{ env.DEFAULT_ARGUMENTS }}" ${{ inputs.arguments }}' "$CONFIG")
         echo ARGUMENTS="$ARGUMENTS" >> $GITHUB_ENV
     - name: Prepare arguments for the performance test
       if: ${{ inputs.test-type == 'performance' }}
