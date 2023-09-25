@@ -80,12 +80,13 @@ runs:
         echo ${{ env.ARGUMENTS }}
         ARGUMENTS=""
         while IFS=" " read -r arg; do
-          ARGUMENTS="${ARGUMENTS}\"${arg}\","$'\n'
+          echo 
+          ARGUMENTS="$ARGUMENTS\"${arg}\", "
         done <<< ${{ env.ARGUMENTS }}
-        echo ARGUMENTS="$ARGUMENTS" >> $GITHUB_ENV
+        echo ARGUMENTS=$ARGUMENTS >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
       run: |
         echo ${{ env.ARGUMENTS }}
         ARGUMENTS=$(echo "${{ env.ARGUMENTS }}" | tr '\n' ' ')
-        echo arguments="$ARGUMENTS" >> $GITHUB_OUTPUT
+        echo arguments=$ARGUMENTS >> $GITHUB_OUTPUT
