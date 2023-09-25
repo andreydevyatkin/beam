@@ -20,11 +20,11 @@ description: 'Set test arguments action to run the test'
 inputs:
   argument-paths:
     required: true
-    description: 'List of paths to files with arguments for tests'
+    description: 'List of paths to files with test arguments'
     default: ''
   arguments:
     required: false
-    description: 'Test arguments'
+    description: 'Test arguments generated at runtime'
     default: ''
   test-type:
     required: true
@@ -39,10 +39,10 @@ inputs:
     description: 'Type "true" if this is a Python test'
     default: 'false'
 
-# outputs:
-#   arguments:
-#     description: "Arguments"
-#     value: ${{ steps.test_arguments.outputs.arguments }}
+env:
+  PROJECT: apache-beam-testing
+  INFLUX_DATABSE: beam_test_metrics
+  INFLUX_HOST: http://10.128.0.96:8086
 
 runs:
   using: composite
@@ -52,19 +52,19 @@ runs:
       shell: bash
       run: |
         DEFAULT_ARGUMENTS=$(echo "
-          --project=apache-beam-testing
-          --influxDatabase=beam_test_metrics
-          --influxHost=http://10.128.0.96:8086
+          --project=${{ env.PROJECT }}
+          --influxDatabase=${{ env.INFLUX_DATABSE }}
+          --influxHost=${{ env.INFLUX_HOST }}
         ")
-        echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
+        echo DEFAULT_ARGUMENTS="$DEFAULT_ARGUMENTS" >> $GITHUB_ENV
     - name: Get default Python test arguments
       if: ${{ inputs.python-test == 'true' }}
       shell: bash
       run: |
         DEFAULT_ARGUMENTS=$(echo "
-          --project=apache-beam-testing
-          --influx_db_name=beam_test_metrics
-          --influx_hostname=http://10.128.0.96:8086
+          --project=${{ env.PROJECT }}
+          --influx_db_name=${{ env.INFLUX_DATABSE }}
+          --influx_hostname=${{ env.INFLUX_HOST }}
         ")
         echo DEFAULT_ARGUMENTS="$DEFAULT_ARGUMENTS" >> $GITHUB_ENV
     - name: Group arguments
@@ -78,12 +78,11 @@ runs:
           ARGUMENTS="${ARGUMENTS% }"
           if ${{ inputs.test-type == 'performance' }}; then
             arguments=""
-            read -ra args <<< "${ARGUMENTS}"
+            read -ra args <<< "$ARGUMENTS"
             for arg in "${args[@]}"; do
               arguments="${arguments}\"${arg}\","
             done
-            ARGUMENTS="${arguments%, }"
+            ARGUMENTS="${arguments%,}"
           fi
           echo "${{ github.job }}_${{ inputs.test-type }}_test_arguments_$((index + 1))"="$ARGUMENTS" >> $GITHUB_ENV
-          unset DEFAULT_ARGUMENTS
         done       

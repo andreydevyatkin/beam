@@ -47,6 +47,7 @@ env:
   GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
   GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GE_CACHE_USERNAME }}
   GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GE_CACHE_PASSWORD }}
+  beam_PerformanceTests_AvroIOIT_HDFS_performance_test_arguments_1: ''
 
 jobs:
   beam_PerformanceTests_AvroIOIT_HDFS:
@@ -80,13 +81,13 @@ jobs:
         with:
           cluster_name: io-datastores
           k8s_namespace: ${{ matrix.job_name }}-${{ github.run_id }}
-      # - name: Install Hadoop
-      #   id: install_hadoop
-      #   run: |
-      #     kubectl apply -f ${{ github.workspace }}/.test-infra/kubernetes/hadoop/LargeITCluster/hdfs-multi-datanode-cluster.yml
-      #     kubectl wait svc/hadoop --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' --timeout=120s
-      #     loadbalancer_IP=$(kubectl get svc hadoop -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-      #     echo hadoop_IP=$loadbalancer_IP >> $GITHUB_OUTPUT
+      - name: Install Hadoop
+        id: install_hadoop
+        run: |
+          kubectl apply -f ${{ github.workspace }}/.test-infra/kubernetes/hadoop/LargeITCluster/hdfs-multi-datanode-cluster.yml
+          kubectl wait svc/hadoop --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' --timeout=120s
+          loadbalancer_IP=$(kubectl get svc hadoop -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          echo hadoop_IP=$loadbalancer_IP >> $GITHUB_OUTPUT
       - name: Prepare test arguments
         id: test_arguments
         uses: ./.github/actions/test-arguments-action
@@ -95,15 +96,9 @@ jobs:
           java-test: true
           argument-paths: |
             ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS.txt
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_CoGBK_Java_Streaming_2GB_MultipleKey.txt
           arguments: |
             --filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_
             --hdfsConfiguration=[{\"fs.defaultFS\":\"hdfs:${{ steps.install_hadoop.outputs.hadoop_IP }}:9000\",\"dfs.replication\":1}]
-      - name: Paths
-        shell: bash
-        run: |
-          echo "${{ env.beam_PerformanceTests_AvroIOIT_HDFS_performance_test_arguments_1 }}"
-          echo "${{ env.beam_PerformanceTests_AvroIOIT_HDFS_performance_test_arguments_2 }}"       
       - name: run integrationTest
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
@@ -113,4 +108,4 @@ jobs:
             --info \
             -Dfilesystem=hdfs \
             -DintegrationTestRunner=dataflow \
-            -DintegrationTestPipelineOptions='[${{ steps.test_arguments.outputs.arguments }}]' \
+            -DintegrationTestPipelineOptions='[${{ env.beam_PerformanceTests_AvroIOIT_HDFS_performance_test_arguments_1 }}]' \
