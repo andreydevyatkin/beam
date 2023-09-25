@@ -56,7 +56,7 @@ runs:
           --influxDatabase=beam_test_metrics
           --influxHost=http://10.128.0.96:8086
         ")
-        echo DEFAULT_ARGUMENTS="$DEFAULT_ARGUMENTS" >> $GITHUB_ENV
+        echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS >> $GITHUB_ENV
     - name: Get default Python test arguments
       if: ${{ inputs.python-test == 'true' }}
       shell: bash
@@ -70,22 +70,22 @@ runs:
     - name: Group arguments
       shell: bash
       run: |
-        echo "${{ env.DEFAULT_ARGUMENTS }}"
         CONFIG=$(grep -v "^#.*" ${{ inputs.argument-paths }})
-        ARGUMENTS=$(echo "${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }}" $CONFIG)
+        ARGUMENTS=$(echo '${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }}' $CONFIG)
         echo ARGUMENTS=$ARGUMENTS >> $GITHUB_ENV
     - name: Prepare arguments for the performance test
       if: ${{ inputs.test-type == 'performance' }}
       shell: bash
       run: |
-        echo "${{ env.ARGUMENTS }}"
+        echo ${{ env.ARGUMENTS }}
         ARGUMENTS=""
-        while read -r line; do
-          ARGUMENTS="${ARGUMENTS}\"${line}\","$'\n'
+        while IFS=" " read -r arg; do
+          ARGUMENTS="${ARGUMENTS}\"${arg}\","$'\n'
         done <<< ${{ env.ARGUMENTS }}
         echo ARGUMENTS="$ARGUMENTS" >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
       run: |
+        echo ${{ env.ARGUMENTS }}
         ARGUMENTS=$(echo "${{ env.ARGUMENTS }}" | tr '\n' ' ')
         echo arguments="$ARGUMENTS" >> $GITHUB_OUTPUT
