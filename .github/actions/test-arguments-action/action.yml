@@ -77,8 +77,8 @@ runs:
       if: ${{ inputs.test-type == 'performance' }}
       shell: bash
       run: |
-        args=${{ env.ARGUMENTS }}
-        result=$(echo "$args" | awk -v OFS=", " '{$1=$1; print "\"" "$0" "\""}')
+        args="${{ env.ARGUMENTS }}"
+        result=$(echo "$args" | awk -v OFS=", " '{$1=$1; print "\"" $0 "\""}')
         echo ARGUMENTS="$result" >> $GITHUB_ENV
     - id: test_arguments
       shell: bash
