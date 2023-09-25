@@ -18,7 +18,7 @@
 name: 'Set test arguments action'
 description: 'Set test arguments action to run the test'
 inputs:
-  argument-paths:
+  argument-file-paths:
     required: true
     description: 'List of paths to files with test arguments'
     default: ''

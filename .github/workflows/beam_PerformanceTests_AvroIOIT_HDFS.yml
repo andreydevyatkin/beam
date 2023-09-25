@@ -93,7 +93,8 @@ jobs:
         uses: ./.github/actions/test-arguments-action
         with:
           test-type: performance
-          argument-paths: |
+          test-language: java
+          argument-file-paths: |
             ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS.txt
           arguments: |
             --filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_
