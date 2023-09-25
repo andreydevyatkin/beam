@@ -51,11 +51,12 @@ runs:
       if: ${{ inputs.java-test == 'true' }}
       shell: bash
       run: |
-        echo DEFAULT_ARGUMENTS="
+        DEFAULT_ARGUMENTS=$(echo "
           --project=apache-beam-testing
           --influxDatabase=beam_test_metrics
           --influxHost=http://10.128.0.96:8086
-        " >> $GITHUB_ENV
+        ")
+        echo DEFAULT_ARGUMENTS=$DEFAULT_ARGUMENTS>> $GITHUB_ENV
     - name: Get default Python test arguments
       if: ${{ inputs.python-test == 'true' }}
       shell: bash
