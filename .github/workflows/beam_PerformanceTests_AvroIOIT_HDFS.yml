@@ -50,7 +50,7 @@ env:
   beam_PerformanceTests_AvroIOIT_HDFS_test_arguments_1: ''
 
 jobs:
-  beam_Tests_AvroIOIT_HDFS:
+  beam_PerformanceTests_AvroIOIT_HDFS:
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule' ||
@@ -99,7 +99,6 @@ jobs:
           arguments: |
             --filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_
             --hdfsConfiguration=[{\"fs.defaultFS\":\"hdfs:${{ steps.install_hadoop.outputs.hadoop_IP }}:9000\",\"dfs.replication\":1}]
-            --job_name=load-tests-go-dataflow-batch-pardo-$(date '+%m%d%H%M%S' --utc)
       - name: run integrationTest
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
