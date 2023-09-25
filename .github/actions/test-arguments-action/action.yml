@@ -39,10 +39,10 @@ inputs:
     description: 'Type "true" if this is a Python test'
     default: 'false'
 
-outputs:
-  arguments:
-    description: "Arguments"
-    value: ${{ steps.test_arguments.outputs.arguments }}
+# outputs:
+#   arguments:
+#     description: "Arguments"
+#     value: ${{ steps.test_arguments.outputs.arguments }}
 
 runs:
   using: composite
@@ -70,19 +70,31 @@ runs:
     - name: Group arguments
       shell: bash
       run: |
-        CONFIG=$(grep -v "^#.*" ${{ inputs.argument-paths }})
-        ARGUMENTS=$(echo "${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }} $CONFIG" | tr '\n' ' ')
-        ARGUMENTS="${ARGUMENTS% }"
-        echo arguments=$ARGUMENTS >> $GITHUB_OUTPUT
-    - name: Prepare arguments for the performance test
-      if: ${{ inputs.test-type == 'performance' }}
-      shell: bash
-      run: |
-        ARGUMENTS=""
-        read -ra args <<< "${{ env.ARGUMENTS }}"
-        for arg in "${args[@]}"; do
-          ARGUMENTS="${ARGUMENTS}\"${arg}\","
-        done
-        ARGUMENTS="${ARGUMENTS%, }"
-        echo $ARGUMENTS
-        echo arguments="$ARGUMENTS" >> $GITHUB_OUTPUT
+        PATHS=$(echo "${{ inputs.argument-paths }}" | tr '\n' ' ')
+        read -ra paths <<< "$PATHS"
+        for index in "${!paths[@]}"; do
+          CONFIG=$(grep -v "^#.*" ${paths[index]})
+          ARGUMENTS=$(echo "${{ env.DEFAULT_ARGUMENTS }} ${{ inputs.arguments }} $CONFIG" | tr '\n' ' ')
+          ARGUMENTS="${ARGUMENTS% }"
+          if ${{ inputs.test-type == 'performance' }}; then
+            arguments=""
+            read -ra args <<< "${ARGUMENTS}"
+            for arg in "${args[@]}"; do
+              arguments="${arguments}\"${arg}\","
+            done
+            ARGUMENTS="${arguments%, }"
+          fi
+          echo "${{ github.job }}_${{ inputs.test-type }}_test_arguments_$((index + 1))"="$ARGUMENTS" >> $GITHUB_ENV
+        done       
+    # - name: Prepare arguments for the performance test
+    #   if: ${{ inputs.test-type == 'performance' }}
+    #   shell: bash
+    #   run: |
+    #     ARGUMENTS=""
+    #     read -ra args <<< "${{ env.ARGUMENTS }}"
+    #     for arg in "${args[@]}"; do
+    #       ARGUMENTS="${ARGUMENTS}\"${arg}\","
+    #     done
+    #     ARGUMENTS="${ARGUMENTS%, }"
+    #     echo "$ARGUMENTS"
+    #     echo arguments="$ARGUMENTS" >> $GITHUB_OUTPUT
