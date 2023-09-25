@@ -79,7 +79,7 @@ runs:
     - name: Group arguments
       shell: bash
       run: |
-        PATHS=($(echo "${{ inputs.argument-paths }}" | tr '\n' ' '))
+        PATHS=($(echo "${{ inputs.argument-file-paths }}" | tr '\n' ' '))
         for index in "${!PATHS[@]}"; do
           CONFIG=$(grep -v "^#.*" ${PATHS[index]})
           ARGUMENTS=$(echo "${{ steps.default_arguments.outputs.arguments }} ${{ inputs.arguments }} $CONFIG" | tr '\n' ' ')
