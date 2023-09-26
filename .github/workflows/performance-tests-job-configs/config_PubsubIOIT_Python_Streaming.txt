@@ -25,4 +25,3 @@
 --autoscaling_algorithm=NONE
 --pubsub_namespace_prefix=pubsub_io_performance_
 --wait_until_finish_duration=720000
---runner=TestDataflowRunner
