@@ -105,4 +105,4 @@ jobs:
             --info \
             --tests org.apache.beam.sdk.io.cdap.CdapIOIT \
             -DintegrationTestRunner=dataflow \
-            -DintegrationTestPipelineOptions=[${{ env.beam_PerformanceTests_Cdap_test_arguments_1 }}] \
+            -DintegrationTestPipelineOptions='[${{ env.beam_PerformanceTests_Cdap_test_arguments_1 }}]' \
