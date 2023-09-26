@@ -20,7 +20,7 @@
 --metrics_dataset=beam_performance
 --metrics_table=psio_io_2GB_results
 --influx_measurement=python_psio_2GB_results
---input_options='{\"num_records\":2097152,\"key_size\":1,\"value_size\":1024,\"algorithm\":\"lcg\"}'
+--input_options='{"num_records":2097152,"key_size":1,"value_size":1024,"algorithm":"lcg"}'
 --num_workers=5
 --autoscaling_algorithm=NONE
 --pubsub_namespace_prefix=pubsub_io_performance_
