@@ -14,15 +14,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
---region=us-central1
---temp_location=gs://temp-storage-for-perf-tests/loadtests
+--runner=TestDataflowRunner
 --publish_to_big_query=true
 --metrics_dataset=beam_performance
---metrics_table=psio_io_2GB_results
---influx_measurement=python_psio_2GB_results
---input_options=''{\\"num_records\\":2097152,\\"key_size\\":1,\\"value_size\\":1024,\\"algorithm\\":\\"lcg\\"}''
---num_workers=5
+--input=gs://apache-beam-samples/input_small_files/ascii_sort_1MB_input.0000*
+--output=gs://temp-storage-for-end-to-end-tests/py-it-cloud/output
+--expect_checksum=ea0ca2e5ee4ea5f218790f28d0b9fe7d09d8d710
+--num_workers=10
 --autoscaling_algorithm=NONE
---pubsub_namespace_prefix=pubsub_io_performance_
---wait_until_finish_duration=720000
---runner=TestDataflowRunner
