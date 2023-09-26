@@ -80,7 +80,7 @@ jobs:
           test-type: load
           test-language: python
           argument-file-paths: |
-            ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_PubsubIO_Python.txt
+            ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_PubsubIOIT_Python_Streaming.txt
           arguments: |
             --job_name=performance-tests-psio-python-2gb$(date '+%m%d%H%M%S' --utc)
       - name: Run test
