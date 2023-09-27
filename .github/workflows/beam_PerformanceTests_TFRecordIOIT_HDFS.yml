@@ -96,7 +96,7 @@ jobs:
           test-type: performance
           test-language: java
           argument-file-paths: |
-            ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_AvroIOIT_HDFS.txt
+            ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_TFRecordIOIT_HDFS.txt
           arguments: |
             --filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_
             --hdfsConfiguration=[{\\\"fs.defaultFS\\\":\\\"hdfs:${{ steps.install_hadoop.outputs.hadoop_IP }}:9000\\\",\\\"dfs.replication\\\":1}]
@@ -109,4 +109,4 @@ jobs:
             --tests org.apache.beam.sdk.io.tfrecord.TFRecordIOIT \
             -Dfilesystem=hdfs \
             -DintegrationTestRunner=dataflow \
-            -DintegrationTestPipelineOptions='[${{ env.beam_PerformanceTests_AvroIOIT_HDFS_test_arguments_1 }}]' \
+            -DintegrationTestPipelineOptions='[${{ env.beam_PerformanceTests_TFRecordIOIT_HDFS_test_arguments_1 }}]' \
