@@ -20,8 +20,8 @@
 --bigQueryDataset=beam_performance
 --bigQueryTable=mongodbioit_results
 --influxMeasurement=mongodbioit_results
---mongoDBDatabaseName=postgres
---mongoDBPort=5432
+--mongoDBDatabaseName=beam
+--mongoDBPort=27017
 --mongoDBUsername=root
 --mongoDBPassword=uuinkkS
 --numWorkers=5
