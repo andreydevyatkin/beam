@@ -16,7 +16,7 @@
 
 --tempRoot=gs://temp-storage-for-perf-tests
 --runner=DataflowRunner
---input_options=''{\\"numRecords\\":\\"5000000\\",\\"keySizeBytes\\":\\"1\\",\\"valueSizeBytes\\":\\"90\\"}''
+--sourceOptions=''{\\"numRecords\\":\\"5000000\\",\\"keySizeBytes\\":\\"1\\",\\"valueSizeBytes\\":\\"90\\"}''
 --bigQueryDataset=beam_performance
 --bigQueryTable=sparkreceiverioit_results
 --influxMeasurement=sparkreceiverioit_results
