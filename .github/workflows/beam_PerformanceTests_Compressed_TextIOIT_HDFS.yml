@@ -86,17 +86,17 @@ jobs:
           kubectl wait svc/hadoop --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' --timeout=120s
           loadbalancer_IP=$(kubectl get svc hadoop -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
           echo hadoop_IP=$loadbalancer_IP >> $GITHUB_OUTPUT
-# The env variable is created and populated in the test-arguments-action as "<github.job>_test_arguments_<argument_file_paths_index>"
       - name: Prepare test arguments
         uses: ./.github/actions/test-arguments-action
         with:
           test-type: performance
           test-language: java
           argument-file-paths: |
-            ${{ github.workspace }}/.github/workflows/performance-tests-job-configs/config_Compressed_TextIOIT_HDFS.txt
+            ${{ github.workspace }}/.github/workflows/performance-tests-pipeline-options/compressed_TextIOIT_HDFS.txt
           arguments: |
             --filenamePrefix=hdfs://${{ steps.install_hadoop.outputs.hadoop_IP }}:9000/TEXTIO_IT_
             --hdfsConfiguration=[{\\\"fs.defaultFS\\\":\\\"hdfs:${{ steps.install_hadoop.outputs.hadoop_IP }}:9000\\\",\\\"dfs.replication\\\":1}]
+      # The env variable is created and populated in the test-arguments-action as "<github.job>_test_arguments_<argument_file_paths_index>"
       - name: run integrationTest
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
