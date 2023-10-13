@@ -67,11 +67,10 @@ jobs:
           comment_phrase: ${{ matrix.job_phrase }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_job: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-      - name: Setup environment
-        uses: ./.github/actions/setup-environment-action
+      - name: Install Python
+        uses: actions/setup-python@v4
         with:
           python-version: 3.8
-          go-version: 1.21
       - name: run testPipelineJarFlinkRunner script
         env:
           CLOUDSDK_CONFIG: ${{ env.KUBELET_GCLOUD_CONFIG_PATH}}

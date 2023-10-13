@@ -76,7 +76,6 @@ jobs:
             11
             8
           python-version: ${{ matrix.python_version }}
-          go-version: 1.21
       - name: Set PY_VER_CLEAN
         id: set_py_ver_clean
         run: |
