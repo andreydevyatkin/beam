@@ -1240,7 +1240,7 @@ class BeamModulePlugin implements Plugin<Project> {
       }
 
       project.jacocoTestReport {
-        // dependsOn project.test
+        dependsOn project.test
         doFirst {
           getClassDirectories().setFrom(project.files(
               project.fileTree(
@@ -1252,8 +1252,8 @@ class BeamModulePlugin implements Plugin<Project> {
               )
         }
         reports {
-          xml.enabled = true
-          html.enabled = true
+          xml.required true
+          html.required true
         }
       }
 
