@@ -1236,7 +1236,7 @@ class BeamModulePlugin implements Plugin<Project> {
           includes = configuration.jacocoIncludes
           excludes = configuration.jacocoExcludes
         }
-        finalizedBy jacocoTestReport
+        finalizedBy project.jacocoTestReport
       }
 
       project.jacocoTestReport {
