@@ -179,6 +179,21 @@ class BeamModulePlugin implements Plugin<Project> {
      * The set of additional maven repositories that should be added into published POM file.
      */
     List<Map> mavenRepositories = []
+
+    /**
+     * The set of includes that should be used during the Jacoco results generation.
+     */
+    List<String> jacocoIncludes = []
+
+    /**
+     * The set of excludes that should be used during the Jacoco results generation.
+     */
+    List<String> jacocoExcludes = [
+      '**/org/apache/beam/gradle/**',
+      '**/org/apache/beam/model/**',
+      '**/org/apache/beam/runners/dataflow/worker/windmill/**',
+      '**/AutoValue_*'
+    ]
   }
 
   /** A class defining the set of configurable properties accepted by applyPortabilityNature. */
@@ -1216,28 +1231,29 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      def jacocoExcludes = [
-        '**/org/apache/beam/gradle/**',
-        '**/org/apache/beam/model/**',
-        '**/org/apache/beam/runners/dataflow/worker/windmill/**',
-        '**/AutoValue_*'
-      ]
-
       project.test {
         jacoco {
-          excludes = jacocoExcludes
+          includes = configuration.jacocoIncludes
+          excludes = configuration.jacocoExcludes
         }
+        finalizedBy jacocoTestReport
       }
 
       project.jacocoTestReport {
+        dependsOn test
         doFirst {
           getClassDirectories().setFrom(project.files(
               project.fileTree(
               dir: "${project.rootDir}",
-              exclude: jacocoExcludes
+              includes: configuration.jacocoIncludes,
+              excludes: configuration.jacocoExcludes
               )
               )
               )
+        }
+        reports {
+          xml.enabled true
+          html.enabled true
         }
       }
 
