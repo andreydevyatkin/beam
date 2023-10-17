@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Load Tests SideInput Dataflow Batch Go
+name: LoadTests SideInput Dataflow Batch Go
 
 on:
   schedule:
@@ -73,10 +73,11 @@ jobs:
           test-type: load
           test-language: go
           argument-file-paths: |
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_SideInput_Go_Batch_Dataflow_First_Iterable.txt
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_SideInput_Go_Batch_Dataflow_Iterable.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/sideInput_Go_Batch_Dataflow_First_Iterable.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/sideInput_Go_Batch_Dataflow_Iterable.txt
           arguments: |
             --job_name=load-tests-go-dataflow-batch-sideinput-$(date '+%m%d%H%M%S' --utc)
+      # The env variables are created and populated in the test-arguments-action as "<github.job>_test_arguments_<argument_file_paths_index>"
       - name: run SideInput Dataflow Batch Go Load Test 1 (first iterable)
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:

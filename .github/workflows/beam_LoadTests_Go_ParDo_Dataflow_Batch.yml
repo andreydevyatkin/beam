@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Load Tests ParDo Dataflow Batch Go
+name: LoadTests ParDo Dataflow Batch Go
 
 on:
   schedule:
@@ -73,12 +73,13 @@ jobs:
           test-type: load
           test-language: go
           argument-file-paths: |
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_ParDo_Go_Batch_10_Iterations.txt
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_ParDo_Go_Batch_200_Iterations.txt
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_ParDo_Go_Batch_10_Counters.txt
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_ParDo_Go_Batch_100_Counters.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/parDo_Go_Batch_10_Iterations.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/parDo_Go_Batch_200_Iterations.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/parDo_Go_Batch_10_Counters.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/parDo_Go_Batch_100_Counters.txt
           arguments: |
             --job_name=load-tests-go-dataflow-batch-pardo-$(date '+%m%d%H%M%S' --utc)
+      # The env variables are created and populated in the test-arguments-action as "<github.job>_test_arguments_<argument_file_paths_index>"
       - name: run ParDo Dataflow Batch Go Load Test 1 (10 iterations)
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:

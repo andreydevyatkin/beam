@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Load Tests CoGBK Dataflow Batch Go
+name: LoadTests CoGBK Dataflow Batch Go
 
 on:
   schedule:
@@ -73,12 +73,13 @@ jobs:
           test-type: load
           test-language: go
           argument-file-paths: |
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_CoGBK_Go_Batch_SingleKey.txt
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_CoGBK_Go_Batch_MultipleKey.txt
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_CoGBK_Go_Batch_Reiteration_10KB.txt
-            ${{ github.workspace }}/.github/workflows/load-tests-job-configs/config_CoGBK_Go_Batch_Reiteration_2MB.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/CoGBK_Go_Batch_SingleKey.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/CoGBK_Go_Batch_MultipleKey.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/CoGBK_Go_Batch_Reiteration_10KB.txt
+            ${{ github.workspace }}/.github/workflows/load-tests-pipeline-options/CoGBK_Go_Batch_Reiteration_2MB.txt
           arguments: |
             --job_name=load-tests-go-dataflow-batch-cogbk-$(date '+%m%d%H%M%S' --utc)
+      # The env variables are created and populated in the test-arguments-action as "<github.job>_test_arguments_<argument_file_paths_index>"
       - name: run CoGBK Dataflow Batch Go Load Test 1 (single key)
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
