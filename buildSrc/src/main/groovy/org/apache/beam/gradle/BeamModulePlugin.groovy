@@ -1230,7 +1230,6 @@ class BeamModulePlugin implements Plugin<Project> {
       }
 
       project.jacocoTestReport {
-        dependsOn project.test
         doFirst {
           getClassDirectories().setFrom(project.files(
               project.fileTree(
