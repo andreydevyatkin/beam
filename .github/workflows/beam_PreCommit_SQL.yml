@@ -93,7 +93,7 @@ jobs:
             -PdisableCheckStyle=true \
             -PenableJacocoReport \
             -PjacocoIncludes="**/org/apache/beam/sdk/extensions/sql/**" \
-            -PjacocoExcludes="**/AutoValue_*"
+            -PjacocoExcludes="**/AutoValue_*" \
       - name: Archive JUnit Test Results
         uses: actions/upload-artifact@v3
         if: failure()
