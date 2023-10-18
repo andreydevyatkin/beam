@@ -1241,8 +1241,8 @@ class BeamModulePlugin implements Plugin<Project> {
               )
         }
         reports {
-          xml.enabled true
-          html.enabled true
+          xml.required = true
+          html.required = true
         }
       }
 
