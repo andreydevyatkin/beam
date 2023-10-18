@@ -1231,30 +1231,47 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      project.test {
-        jacoco {
-          includes = configuration.jacocoIncludes
-          excludes = configuration.jacocoExcludes
+      project.tasks.withType(JacocoReport) {
+        group = "Reporting"
+        description = "Generates code coverage report"
+        classDirectories.setFrom(files(files(project.sourceSets.main.output).collect {
+                  project.fileTree(
+                          dir: it,
+                          includes: configuration.jacocoIncludes,
+                          excludes: configuration.jacocoExcludes
+        }))
+        sourceDirectories.setFrom(files(project.sourceSets.main.allSource.srcDirs))
+        executionData.setFrom(file("${buildDir}/jacoco/test.exec"))
+        reports {
+          xml.enabled true
+          html.enabled true
         }
       }
 
-      project.jacocoTestReport {
-        dependsOn project.test
-        doFirst {
-          getClassDirectories().setFrom(project.files(
-              project.fileTree(
-              dir: "${project.rootDir}",
-              includes: configuration.jacocoIncludes,
-              excludes: configuration.jacocoExcludes
-              )
-              )
-              )
-        }
-        reports {
-          xml.required = true
-          html.required = true
-        }
-      }
+      // project.test {
+      //   jacoco {
+      //     includes = configuration.jacocoIncludes
+      //     excludes = configuration.jacocoExcludes
+      //   }
+      // }
+
+      // project.jacocoTestReport {
+      //   dependsOn project.test
+      //   doFirst {
+      //     getClassDirectories().setFrom(project.files(
+      //         project.fileTree(
+      //         dir: "${project.rootDir}",
+      //         includes: configuration.jacocoIncludes,
+      //         excludes: configuration.jacocoExcludes
+      //         )
+      //         )
+      //         )
+      //   }
+      //   reports {
+      //     xml.required = true
+      //     html.required = true
+      //   }
+      // }
 
       if (configuration.shadowClosure) {
         // Ensure that tests are packaged and part of the artifact set.
