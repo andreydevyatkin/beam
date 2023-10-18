@@ -41,8 +41,6 @@ applyJavaNature(
   ],
   // javacc generated code produces lint warnings
   disableLintWarnings: ['dep-ann', 'rawtypes'],
-  jacocoIncludes: ['**/org/apache/beam/sdk/extensions/sql/**'],
-  jacocoExcludes: ['**/AutoValue_*'],
 )
 
 description = "Apache Beam :: SDKs :: Java :: Extensions :: SQL"
