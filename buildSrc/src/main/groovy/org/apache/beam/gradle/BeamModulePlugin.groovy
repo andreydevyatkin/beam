@@ -523,7 +523,25 @@ class BeamModulePlugin implements Plugin<Project> {
       // Disable jacoco unless report requested such that task outputs can be properly cached.
       // https://discuss.gradle.org/t/do-not-cache-if-condition-matched-jacoco-agent-configured-with-append-true-satisfied/23504
       def enabled = project.hasProperty('enableJacocoReport') || graph.allTasks.any { it instanceof JacocoReport || it.name.contains('javaPreCommit') }
-      project.tasks.withType(Test) { jacoco.enabled = enabled }
+      if (enabled) {
+        project.tasks.withType(Test) { jacoco.enabled = true }
+        project.tasks.withType(JacocoReport) {
+          group = "Reporting"
+          description = "Generates code coverage report"
+          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+                  project.fileTree(
+                          dir: it,
+                          includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : [],
+                          excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : [])
+          }))
+          getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
+          executionData.setFrom(project.file("${project.buildDir}/jacoco/test.exec"))
+          reports {
+            xml.required = true
+            html.required = true
+          }
+        }
+      }
     }
 
     // Apply a plugin which provides tasks for dependency / property / task reports.
@@ -1228,23 +1246,6 @@ class BeamModulePlugin implements Plugin<Project> {
             force "org.hamcrest:hamcrest-core:$hamcrest_version"
             force "org.hamcrest:hamcrest-library:$hamcrest_version"
           }
-        }
-      }
-
-      project.tasks.withType(JacocoReport) {
-        group = "Reporting"
-        description = "Generates code coverage report"
-        classDirectories.setFrom(files(files(project.sourceSets.main.output).collect {
-                  project.fileTree(
-                          dir: it,
-                          includes: configuration.jacocoIncludes,
-                          excludes: configuration.jacocoExcludes
-        }))
-        sourceDirectories.setFrom(files(project.sourceSets.main.allSource.srcDirs))
-        executionData.setFrom(file("${buildDir}/jacoco/test.exec"))
-        reports {
-          xml.enabled true
-          html.enabled true
         }
       }
 
