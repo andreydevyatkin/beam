@@ -92,7 +92,7 @@ jobs:
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
             -PenableJacocoReport \
-            -PjacocoIncludes="**/org/apache/beam/sdk/extensions/sql/jdbc/**" \
+            -PjacocoIncludes="**/org/apache/beam/sdk/extensions/sql/**" \
             -PjacocoExcludes="**/AutoValue_*" --info \
       - name: Archive JUnit Test Results
         uses: actions/upload-artifact@v3
