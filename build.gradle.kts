@@ -369,8 +369,6 @@ tasks.register("flinkPreCommit") {
 }
 
 tasks.register("sqlPreCommit") {
-  dependsOn(":sdks:java:extensions:sql:runBasicExample")
-  dependsOn(":sdks:java:extensions:sql:runPojoExample")
   dependsOn(":sdks:java:extensions:sql:build")
   dependsOn(":sdks:java:extensions:sql:buildDependents")
 }

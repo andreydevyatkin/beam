@@ -87,13 +87,13 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :sdks:java:extensions:sql:jdbc:preCommit jacocoTestReport
+          gradle-command: :sqlPreCommit jacocoTestReport
           arguments: |
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
             -PenableJacocoReport \
             -PjacocoIncludes="**/org/apache/beam/sdk/extensions/sql/jdbc/**" \
-            -PjacocoExcludes="**/AutoValue_*" \
+            -PjacocoExcludes="**/AutoValue_*" --info \
       - name: Archive JUnit Test Results
         uses: actions/upload-artifact@v3
         if: failure()
