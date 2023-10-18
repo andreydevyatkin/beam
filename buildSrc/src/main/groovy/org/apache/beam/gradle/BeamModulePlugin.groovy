@@ -1234,7 +1234,7 @@ class BeamModulePlugin implements Plugin<Project> {
           getClassDirectories().setFrom(project.files(
               project.fileTree(
               dir: "${project.rootDir}",
-              includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') : []
+              includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') : [],
               excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') : jacocoExcludes
               )
               )
