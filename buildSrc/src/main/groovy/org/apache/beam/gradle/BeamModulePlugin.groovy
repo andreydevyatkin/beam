@@ -1269,11 +1269,7 @@ class BeamModulePlugin implements Plugin<Project> {
                         excludes: configuration.jacocoExcludes)
         }))
         getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-        executionData.setFrom(project.fileTree(
-          dir: '.',
-          include: "**/build/jacoco/test.exec"
-        ))
-        // executionData.setFrom(project.file("${project.buildDir}/jacoco/test.exec"))
+        executionData.setFrom(project.files("${project.buildDir}/../**/jacoco/test.exec"))
         reports {
           xml.required = true
           html.required = true
