@@ -1260,17 +1260,16 @@ class BeamModulePlugin implements Plugin<Project> {
       }
 
       project.jacocoTestReport {
-        dependsOn project.test
-        doFirst {
-          getClassDirectories().setFrom(project.files(
-              project.fileTree(
-              dir: "${project.rootDir}",
-              includes: configuration.jacocoIncludes,
-              excludes: configuration.jacocoExcludes
-              )
-              )
-              )
-        }
+        group = "Reporting"
+        description = "Generates code coverage report"
+        getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+                project.fileTree(
+                        dir: it,
+                        includes: configuration.jacocoIncludes,
+                        excludes: configuration.jacocoExcludes)
+        }))
+        getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
+        executionData.setFrom(project.file("${project.buildDir}/jacoco/test.exec"))
         reports {
           xml.required = true
           html.required = true
