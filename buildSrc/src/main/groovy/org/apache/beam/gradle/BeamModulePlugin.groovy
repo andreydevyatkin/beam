@@ -524,6 +524,9 @@ class BeamModulePlugin implements Plugin<Project> {
       // https://discuss.gradle.org/t/do-not-cache-if-condition-matched-jacoco-agent-configured-with-append-true-satisfied/23504
       def enabled = project.hasProperty('enableJacocoReport') || graph.allTasks.any { it instanceof JacocoReport || it.name.contains('javaPreCommit') }
       if (enabled) {
+        println project.property('jacocoIncludes')
+        println project.property('jacocoExcludes')
+        
         project.tasks.withType(Test) { jacoco.enabled = true }
         project.tasks.withType(JacocoReport) {
           group = "Reporting"
