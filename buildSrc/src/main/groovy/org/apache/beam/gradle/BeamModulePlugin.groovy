@@ -523,11 +523,11 @@ class BeamModulePlugin implements Plugin<Project> {
       // Disable jacoco unless report requested such that task outputs can be properly cached.
       // https://discuss.gradle.org/t/do-not-cache-if-condition-matched-jacoco-agent-configured-with-append-true-satisfied/23504
       def enabled = project.hasProperty('enableJacocoReport') || graph.allTasks.any { it instanceof JacocoReport || it.name.contains('javaPreCommit') }
+      project.tasks.withType(Test) { jacoco.enabled = enabled }
       if (enabled) {
         println project.property('jacocoIncludes')
-        println project.property('jacocoExcludes')
+        println project.property('jacocoExcludes')       
         
-        project.tasks.withType(Test) { jacoco.enabled = true }
         // project.tasks.withType(JacocoReport) {
         //   group = "Reporting"
         //   description = "Generates code coverage report"
@@ -1260,6 +1260,7 @@ class BeamModulePlugin implements Plugin<Project> {
       }
 
       project.jacocoTestReport {
+        // dependsOn project.test
         group = "Reporting"
         description = "Generates code coverage report"
         getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
@@ -1269,8 +1270,7 @@ class BeamModulePlugin implements Plugin<Project> {
                         excludes: configuration.jacocoExcludes)
         }))
         getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-        getExecutionData().setFrom(project.fileTree("${project.buildDir}/../").include("**/build/jacoco/test.exec"))
-        // executionData.setFrom(project.files("${project.buildDir}/../**/jacoco/test.exec"))
+        getExecutionData().setFrom(project.fileTree(project.buildDir).include("**/build/jacoco/test.exec"))
         reports {
           xml.required = true
           html.required = true
