@@ -528,21 +528,21 @@ class BeamModulePlugin implements Plugin<Project> {
         println project.property('jacocoExcludes')
         
         project.tasks.withType(Test) { jacoco.enabled = true }
-        project.tasks.withType(JacocoReport) {
-          group = "Reporting"
-          description = "Generates code coverage report"
-          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
-                  project.fileTree(
-                          dir: it,
-                          includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : [],
-                          excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : [])
-          }))
-          getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-          executionData.setFrom(project.file("${project.buildDir}/jacoco/test.exec"))
-          reports {
-            xml.required = true
-            html.required = true
-          }
+        // project.tasks.withType(JacocoReport) {
+        //   group = "Reporting"
+        //   description = "Generates code coverage report"
+        //   getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+        //           project.fileTree(
+        //                   dir: it,
+        //                   includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : [],
+        //                   excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : [])
+        //   }))
+        //   getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
+        //   executionData.setFrom(project.file("${project.buildDir}/jacoco/test.exec"))
+        //   reports {
+        //     xml.required = true
+        //     html.required = true
+        //   }
         }
       }
     }
@@ -1252,30 +1252,30 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      // project.test {
-      //   jacoco {
-      //     includes = configuration.jacocoIncludes
-      //     excludes = configuration.jacocoExcludes
-      //   }
-      // }
+      project.test {
+        jacoco {
+          includes = configuration.jacocoIncludes
+          excludes = configuration.jacocoExcludes
+        }
+      }
 
-      // project.jacocoTestReport {
-      //   dependsOn project.test
-      //   doFirst {
-      //     getClassDirectories().setFrom(project.files(
-      //         project.fileTree(
-      //         dir: "${project.rootDir}",
-      //         includes: configuration.jacocoIncludes,
-      //         excludes: configuration.jacocoExcludes
-      //         )
-      //         )
-      //         )
-      //   }
-      //   reports {
-      //     xml.required = true
-      //     html.required = true
-      //   }
-      // }
+      project.jacocoTestReport {
+        dependsOn project.test
+        doFirst {
+          getClassDirectories().setFrom(project.files(
+              project.fileTree(
+              dir: "${project.rootDir}",
+              includes: configuration.jacocoIncludes,
+              excludes: configuration.jacocoExcludes
+              )
+              )
+              )
+        }
+        reports {
+          xml.required = true
+          html.required = true
+        }
+      }
 
       if (configuration.shadowClosure) {
         // Ensure that tests are packaged and part of the artifact set.
