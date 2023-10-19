@@ -58,8 +58,8 @@ env:
 jobs:
   beam_PreCommit_SQL:
     name: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-    runs-on: [self-hosted, macOS, local]
-    # runs-on: [self-hosted, ubuntu-20.04, main]
+    # runs-on: [self-hosted, macOS, local]
+    runs-on: [self-hosted, ubuntu-20.04, main]
     strategy:
       matrix:
         job_name: [beam_PreCommit_SQL]
@@ -118,6 +118,7 @@ jobs:
           echo "path=sdks/java/extensions/sql/build/reports/jacoco/test" >> $GITHUB_OUTPUT
       - name: Archive Jacoco Results
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: Jacoco Results
           path: '**/${{ steps.jacoco_report_path.outputs.path }}/html/**'
