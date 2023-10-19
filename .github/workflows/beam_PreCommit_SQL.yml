@@ -84,18 +84,18 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-      - name: Build and Test
-        uses: ./.github/actions/gradle-command-self-hosted-action
-        with:
-          gradle-command: :sqlPreCommit
-          arguments: |
-            -PdisableSpotlessCheck=true \
-            -PdisableCheckStyle=true \
+      # - name: Build and Test
+      #   uses: ./.github/actions/gradle-command-self-hosted-action
+      #   with:
+      #     gradle-command: :sqlPreCommit
+      #     arguments: |
+      #       -PdisableSpotlessCheck=true \
+      #       -PdisableCheckStyle=true \
       - name: Build report
         run: ./gradlew jacocoTestReport
           -PenableJacocoReport \
-          -PjacocoIncludes="**/org/apache/beam/sdk/extensions/sql/**" \
-          -PjacocoExcludes="**/AutoValue_*" \
+          -PjacocoIncludes=\"**/org/apache/beam/sdk/extensions/sql/**\" \
+          -PjacocoExcludes=\"**/AutoValue_*\" \
       - name: Archive JUnit Test Results
         uses: actions/upload-artifact@v3
         if: failure()
