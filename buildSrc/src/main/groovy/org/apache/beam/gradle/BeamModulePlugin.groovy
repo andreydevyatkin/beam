@@ -1259,23 +1259,23 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      project.jacocoTestReport {
-        // dependsOn project.test
-        group = "Reporting"
-        description = "Generates code coverage report"
-        getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
-                project.fileTree(
-                        dir: it,
-                        includes: configuration.jacocoIncludes,
-                        excludes: configuration.jacocoExcludes)
-        }))
-        getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-        getExecutionData().setFrom(project.fileTree("${project.buildDir}/../").include("**/build/jacoco/test.exec"))
-        reports {
-          xml.required = true
-          html.required = true
-        }
-      }
+      // project.jacocoTestReport {
+      //   // dependsOn project.test
+      //   group = "Reporting"
+      //   description = "Generates code coverage report"
+      //   getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+      //           project.fileTree(
+      //                   dir: it,
+      //                   includes: configuration.jacocoIncludes,
+      //                   excludes: configuration.jacocoExcludes)
+      //   }))
+      //   getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
+      //   getExecutionData().setFrom(project.fileTree("${project.buildDir}/../").include("**/build/jacoco/test.exec"))
+      //   reports {
+      //     xml.required = true
+      //     html.required = true
+      //   }
+      // }
 
       if (configuration.shadowClosure) {
         // Ensure that tests are packaged and part of the artifact set.
