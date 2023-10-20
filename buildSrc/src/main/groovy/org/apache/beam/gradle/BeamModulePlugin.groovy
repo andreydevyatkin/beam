@@ -525,8 +525,8 @@ class BeamModulePlugin implements Plugin<Project> {
       def enabled = project.hasProperty('enableJacocoReport') || graph.allTasks.any { it instanceof JacocoReport || it.name.contains('javaPreCommit') }
       project.tasks.withType(Test) { jacoco.enabled = enabled }
       if (enabled) {
-        println project.property('jacocoIncludes')
-        println project.property('jacocoExcludes')       
+        // println project.property('jacocoIncludes')
+        // println project.property('jacocoExcludes')       
         
         // project.tasks.withType(JacocoReport) {
         //   group = "Reporting"
@@ -1254,7 +1254,7 @@ class BeamModulePlugin implements Plugin<Project> {
 
       project.test {
         jacoco {
-          includes = configuration.jacocoIncludes
+          // includes = configuration.jacocoIncludes
           excludes = configuration.jacocoExcludes
         }
       }
