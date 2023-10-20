@@ -211,8 +211,8 @@ task codeCoverageReport(type: JacocoReport, dependsOn: test) {
   getSourceDirectories().setFrom(files(project.sourceSets.main.allSource.srcDirs))
   getExecutionData().setFrom(project.fileTree("${project.buildDir}/../").include("**/build/jacoco/test.exec"))
   reports {
-    xml.enabled true
-    html.enabled true
+    xml.required = true
+    html.required = true
   }
 }
 
