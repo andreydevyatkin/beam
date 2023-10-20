@@ -87,13 +87,13 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :sqlPreCommit jacocoTestReport
+          gradle-command: :sqlPreCommit
           arguments: |
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
             -PenableJacocoReport \
-            -PjacocoIncludes=\"**/org/apache/beam/sdk/extensions/sql/**\" \
-            -PjacocoExcludes=\"**/AutoValue_*\" \
+          # -PjacocoIncludes=\"**/org/apache/beam/sdk/extensions/sql/**\" \
+          # -PjacocoExcludes=\"**/AutoValue_*\" \
       - name: Archive JUnit Test Results
         uses: actions/upload-artifact@v3
         if: failure()
@@ -115,18 +115,18 @@ jobs:
       - name: Set Jacoco report path
         id: jacoco_report_path
         run: |
-          echo "path=sdks/java/extensions/sql/build/reports/jacoco/test" >> $GITHUB_OUTPUT
+          echo "path=sdks/java/extensions/sql/build/reports/jacoco/codeCoverageReport" >> $GITHUB_OUTPUT
       - name: Archive Jacoco Results
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Jacoco Results
-          path: '**/${{ steps.jacoco_report_path.outputs.path }}/html/**'
+          path: '**/${{ steps.jacoco_report_path.outputs.path }}/**'
       - name: JaCoCo Coverage Report
         id: jacoco_reporter
         uses: PavanMudigonda/jacoco-reporter@v4.8
         with:
-          coverage_results_path: '${{ github.workspace }}/${{ steps.jacoco_report_path.outputs.path }}/jacocoTestReport.xml'
+          coverage_results_path: '${{ github.workspace }}/${{ steps.jacoco_report_path.outputs.path }}/codeCoverageReport.xml'
           coverage_report_name: 'JaCoCo Coverage Report'
           coverage_report_title: 'JaCoCo Coverage Report'
           github_token: ${{ secrets.GITHUB_TOKEN }}
