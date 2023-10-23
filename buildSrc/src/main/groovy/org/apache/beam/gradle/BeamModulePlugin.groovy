@@ -525,26 +525,33 @@ class BeamModulePlugin implements Plugin<Project> {
       def enabled = project.hasProperty('enableJacocoReport') || graph.allTasks.any { it instanceof JacocoReport || it.name.contains('javaPreCommit') }
       project.tasks.withType(Test) { jacoco.enabled = enabled }
       // if (enabled) {
-      //   println project.property('jacocoIncludes')
-      //   println project.property('jacocoExcludes')
-        
-      //   project.tasks.withType(JacocoReport) {
-      //     dependsOn project.test
-      //     getExecutionData().setFrom(project.fileTree(project.rootDir).include("**/build/jacoco/*.exec"))
-      //     getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
-      //             project.fileTree(
-      //                     dir: it,
-      //                     includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : [],
-      //                     excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : [])
-      //     }))
-      //     // getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-      //     reports {
-      //       xml.required = true
-      //       html.required = true
-      //     }
-      //   }
+
       // }
     }
+
+    // println project.property('jacocoIncludes')
+    // println project.property('jacocoExcludes')
+    
+    // project.tasks.withType(JacocoReport) {
+    //   group = "Reporting"
+    //   description = "Generates code coverage report"
+    //   getExecutionData().setFrom(project.fileTree(project.rootDir).include("**/build/jacoco/*.exec"))
+    //   getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+    //           project.fileTree(
+    //                   dir: it,
+    //                   includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : [],
+    //                   excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : [])
+    //   }))
+    //   project.subprojects.each {
+    //     if (it.tasks.withType(JacocoReport)) {
+    //       sourceSets it.sourceSets.main
+    //     }
+    //   }
+    //   reports {
+    //     xml.required = true
+    //     html.required = true
+    //   }
+    // }
 
     // Apply a plugin which provides tasks for dependency / property / task reports.
     // See https://docs.gradle.org/current/userguide/project_reports_plugin.html
@@ -1251,14 +1258,26 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      project.test {
-        jacoco {
-          includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : []
-          excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : []
-        }
-      }
+      // project.test {
+      //   // jacoco {
+      //   //   includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : []
+      //   //   excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : []
+      //   // }
+      //   finalizedBy project.jacocoTestReport
+      // }
 
       project.jacocoTestReport {
+        reports {
+          xml.required = true
+          html.required = true
+        }
+        getExecutionData().setFrom(project.fileTree(project.buildDir).include("**/build/jacoco/*.exec"))
+      }
+
+      project.task('jacocoCoverageReport', type: JacocoReport) {
+        println project.property('jacocoIncludes')
+        println project.property('jacocoExcludes')
+
         group = "Reporting"
         description = "Generates code coverage report"
         getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
@@ -1268,7 +1287,7 @@ class BeamModulePlugin implements Plugin<Project> {
                         excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : [])
         }))
         getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-        getExecutionData().setFrom(project.file("${project.buildDir}/jacoco/test.exec"))
+        getExecutionData().setFrom(project.fileTree(project.rootDir).include("**/build/jacoco/*.exec"))
         reports {
           xml.required = true
           html.required = true
