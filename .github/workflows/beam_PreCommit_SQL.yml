@@ -122,7 +122,7 @@ jobs:
         if: always()
         with:
           name: Jacoco Results
-          path: '**/${{ steps.jacoco_report_path.outputs.path }}/html/**'
+          path: '**/${{ steps.jacoco_report_path.outputs.path }}/**'
       - name: JaCoCo Coverage Report
         id: jacoco_reporter
         uses: PavanMudigonda/jacoco-reporter@v4.8
