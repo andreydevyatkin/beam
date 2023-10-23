@@ -1239,26 +1239,30 @@ class BeamModulePlugin implements Plugin<Project> {
         }
         // finalizedBy project.jacocoTestReport
       }
-
-      def hasSubProjects = project.subprojects.size() > 0
-      if (hasSubProjects) {
-        println "has SubProjects"
-
-        // def (JacocoMerge mergeJacocoTask, JacocoReport mergeJacocoResultReportsTask) = mergeJacoco(project)
-
-        // project.subprojects { subProject ->
-        //   afterEvaluate {
-        //     println subProject
-        //     addJacoco(subProject, mergeTask, mergedReportTask)
-        //   }
-        // }
-      } else {
-        println "no SubProjects"
-
-        project.afterEvaluate {
-          addJacoco(project)
-        }
+      
+      project.afterEvaluate {
+        addJacoco(project)
       }
+
+      // def hasSubProjects = project.subprojects.size() > 0
+      // if (hasSubProjects) {
+      //   println "has SubProjects"
+
+      //   // def (JacocoMerge mergeJacocoTask, JacocoReport mergeJacocoResultReportsTask) = mergeJacoco(project)
+
+      //   // project.subprojects { subProject ->
+      //   //   afterEvaluate {
+      //   //     println subProject
+      //   //     addJacoco(subProject, mergeTask, mergedReportTask)
+      //   //   }
+      //   // }
+      // } else {
+      //   println "no SubProjects"
+
+      //   project.afterEvaluate {
+      //     addJacoco(project)
+      //   }
+      // }
 
       if (configuration.shadowClosure) {
         // Ensure that tests are packaged and part of the artifact set.
