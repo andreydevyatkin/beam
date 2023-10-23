@@ -524,9 +524,6 @@ class BeamModulePlugin implements Plugin<Project> {
       // https://discuss.gradle.org/t/do-not-cache-if-condition-matched-jacoco-agent-configured-with-append-true-satisfied/23504
       def enabled = project.hasProperty('enableJacocoReport') || graph.allTasks.any { it instanceof JacocoReport || it.name.contains('javaPreCommit') }
       project.tasks.withType(Test) { jacoco.enabled = enabled }
-      // if (enabled) {
-
-      // }
     }
 
     // println project.property('jacocoIncludes')
@@ -1259,38 +1256,28 @@ class BeamModulePlugin implements Plugin<Project> {
       }
 
       // project.test {
-      //   // jacoco {
-      //   //   includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : []
-      //   //   excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : []
-      //   // }
+      //   jacoco {
+      //     includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : []
+      //     excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : []
+      //   }
       //   finalizedBy project.jacocoTestReport
       // }
 
-      project.jacocoTestReport {
-        reports {
-          xml.required = true
-          html.required = true
+      def hasSubProjects = project.subprojects.size() > 0
+      if (hasSubProjects) {
+        println "has SubProjects"
+
+        project.subprojects { subProject ->
+          afterEvaluate {
+            println subProject
+            // addJacoco(project)
+          }
         }
-        getExecutionData().setFrom(project.fileTree(project.buildDir).include("**/build/jacoco/*.exec"))
-      }
+      } else {
+        println "no SubProjects"
 
-      project.task('jacocoCoverageReport', type: JacocoReport) {
-        println project.property('jacocoIncludes')
-        println project.property('jacocoExcludes')
-
-        group = "Reporting"
-        description = "Generates code coverage report"
-        getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
-                project.fileTree(
-                        dir: it,
-                        includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : [],
-                        excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : [])
-        }))
-        getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-        getExecutionData().setFrom(project.fileTree(project.rootDir).include("**/build/jacoco/*.exec"))
-        reports {
-          xml.required = true
-          html.required = true
+        project.afterEvaluate {
+          addJacoco(project)
         }
       }
 
@@ -3257,6 +3244,29 @@ class BeamModulePlugin implements Plugin<Project> {
     } else if (configuration.automaticModuleName) {
       project.jar.manifest {
         attributes 'Automatic-Module-Name': configuration.automaticModuleName
+      }
+    }
+  }
+
+  private void addJacoco(Project subProject) {
+    subProject.jacocoTestReport {
+      // dependsOn subProject.test
+
+      println subProject.property('jacocoIncludes')
+      println subProject.property('jacocoExcludes')
+
+      group = "Reporting"
+      description = "Generates code coverage report"
+      getClassDirectories().setFrom(subProject.fileTree(
+              dir: subProject.buildDir,
+              includes: subProject.hasProperty('jacocoIncludes') ? subProject.property('jacocoIncludes').split(',') as List<String> : [],
+              excludes: subProject.hasProperty('jacocoExcludes') ? subProject.property('jacocoExcludes').split(',') as List<String> : []
+      ))
+      getSourceDirectories().setFrom(subProject.files(subProject.sourceSets.main.allSource.srcDirs))
+      getExecutionData().setFrom(subProject.files(subProject.files("${subProject.buildDir}/jacoco/test.exec")))
+      reports {
+        xml.required = true
+        html.required = true
       }
     }
   }
