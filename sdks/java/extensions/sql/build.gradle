@@ -144,9 +144,9 @@ subprojects {
   }
 
   jacocoTestReport {
-    // getAdditionalSourceDirs().setFrom(sourceSets.main.allSource.srcDirs)
-    // getSourceDirectories().setFrom(sourceSets.main.allSource.srcDirs)
-    // getClassDirectories().setFrom(sourceSets.main.output)
+    getAdditionalSourceDirs().setFrom(sourceSets.main.allSource.srcDirs)
+    getSourceDirectories().setFrom(sourceSets.main.allSource.srcDirs)
+    getClassDirectories().setFrom(sourceSets.main.output)
 
     reports {
       xml.required = true
