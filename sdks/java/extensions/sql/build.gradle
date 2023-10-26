@@ -164,10 +164,10 @@ task generateJacocoTestReport(type: JacocoReport, dependsOn: test) {
                     includes: ['**/org/apache/beam/sdk/extensions/sql/**'],
                     excludes: ['**/AutoValue_*'])
   }))
-  getAdditionalSourceDirs().setFrom(subprojects.sourceSets.main.allSource.srcDirs)
-  getSourceDirectories().setFrom(subprojects.sourceSets.main.allSource.srcDirs)
+  getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
+  getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
   getExecutionData().setFrom(fileTree(project.buildDir).include("/jacoco/*.exec"))
-  subprojects.each { subproject ->
+  project.each { subproject ->
         subproject.tasks.withType(JacocoReport).each { report ->
             // println report
             // additionalClassDirs report.allClassDirs
