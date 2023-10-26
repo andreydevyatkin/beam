@@ -171,7 +171,8 @@ task generateJacocoTestReport(type: JacocoReport, dependsOn: test) {
         subproject.tasks.withType(JacocoReport).each { report ->
             // println report
             // additionalClassDirs report.allClassDirs
-            getAdditionalSourceDirs().setFrom(report.sourceSets.main.allSource.srcDirs)
+            additionalSourceDirs report.allSourceDirs
+            // getAdditionalSourceDirs().setFrom(report.sourceSets.main.allSource.srcDirs)
         }
     }
   reports {
