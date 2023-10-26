@@ -527,6 +527,22 @@ class BeamModulePlugin implements Plugin<Project> {
         jacoco.enabled = enabled
       }
       // project.tasks.withType(JacocoReport) {
+      //   def hasSubProjects = project.subprojects.size() > 0
+      //   if (hasSubProjects) {
+      //     println "has subprojects"
+
+      //     project.subprojects { subproject ->
+      //       if(subproject.tasks.withType(JacocoReport)) {
+      //         println "subproject: ${subproject}"
+      //         addJacoco(subproject)
+      //       }
+      //     }
+      //   } else {
+      //     println "project"
+      //     addJacoco(project)
+      //   }
+      // }
+      // project.tasks.withType(JacocoReport) {
       //   println "project: ${project}"
       //   group = "Reporting"
       //   description = "Generates code coverage report for SQL related classes"
@@ -1306,6 +1322,21 @@ class BeamModulePlugin implements Plugin<Project> {
           excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
         }
         // finalizedBy project.jacocoTestReport
+      }
+
+      def hasSubProjects = project.subprojects.size() > 0
+      if (hasSubProjects) {
+        println "has subprojects"
+
+        // project.subprojects { subproject ->
+        //   if(subproject.tasks.withType(JacocoReport)) {
+        //     println "subproject: ${subproject}"
+        //     addJacoco(subproject)
+        //   }
+        // }
+      } else {
+        println "project"
+        addJacoco(project)
       }
 
       // project.jacocoTestReport {
