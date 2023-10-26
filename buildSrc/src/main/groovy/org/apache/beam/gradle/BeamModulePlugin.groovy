@@ -1328,15 +1328,21 @@ class BeamModulePlugin implements Plugin<Project> {
       if (hasSubProjects) {
         println "has subprojects"
 
-        // project.subprojects { subproject ->
-        //   if(subproject.tasks.withType(JacocoReport)) {
-        //     println "subproject: ${subproject}"
-        //     addJacoco(subproject)
-        //   }
-        // }
+        project.subprojects { subproject ->
+          afterEvaluate {
+            println "subproject: ${subproject}"
+            addJacoco(subproject)
+            // if(subproject.tasks.withType(JacocoReport)) {
+            //   println "subproject: ${subproject}"
+            //   addJacoco(subproject)
+            // }
+          }
+        }
       } else {
-        println "project"
-        addJacoco(project)
+        project.afterEvaluate {
+          println "project"
+          addJacoco(project)
+        }
       }
 
       // project.jacocoTestReport {
@@ -3536,5 +3542,6 @@ class BeamModulePlugin implements Plugin<Project> {
         html.required = true
       }
     }
+    project.check.dependsOn project.jacocoTestReport
   }
 }
