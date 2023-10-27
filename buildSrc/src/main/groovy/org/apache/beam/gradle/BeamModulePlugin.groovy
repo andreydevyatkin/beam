@@ -1316,13 +1316,13 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      project.test {
-        jacoco {
-          includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
-          excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-        }
-        // finalizedBy project.jacocoTestReport
-      }
+      // project.test {
+      //   jacoco {
+      //     includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
+      //     excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+      //   }
+      //   // finalizedBy project.jacocoTestReport
+      // }
 
       def hasSubProjects = project.subprojects.size() > 0
       if (hasSubProjects) {
@@ -3542,6 +3542,6 @@ class BeamModulePlugin implements Plugin<Project> {
         html.required = true
       }
     }
-    project.check.dependsOn project.jacocoTestReport
+    // project.check.dependsOn project.jacocoTestReport
   }
 }
