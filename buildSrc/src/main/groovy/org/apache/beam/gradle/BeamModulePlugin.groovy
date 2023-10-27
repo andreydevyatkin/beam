@@ -1316,13 +1316,13 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      project.test {
-        jacoco {
-          includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
-          excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-        }
-        // finalizedBy project.jacocoTestReport
-      }
+      // project.test {
+      //   jacoco {
+      //     includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
+      //     excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+      //   }
+      //   // finalizedBy project.jacocoTestReport
+      // }
 
       def hasSubProjects = project.subprojects.size() > 0
       if (hasSubProjects) {
@@ -1331,7 +1331,7 @@ class BeamModulePlugin implements Plugin<Project> {
         project.subprojects { subproject ->
           afterEvaluate {
             println "subproject: ${subproject}"
-            // addJacoco(subproject)
+            addJacoco(subproject)
             // if(subproject.tasks.withType(JacocoReport)) {
             //   println "subproject: ${subproject}"
             //   addJacoco(subproject)
