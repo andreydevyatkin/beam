@@ -1331,7 +1331,7 @@ class BeamModulePlugin implements Plugin<Project> {
         project.subprojects { subproject ->
           afterEvaluate {
             println "subproject: ${subproject}"
-            addJacoco(subproject)
+            // addJacoco(subproject)
             // if(subproject.tasks.withType(JacocoReport)) {
             //   println "subproject: ${subproject}"
             //   addJacoco(subproject)
@@ -3524,7 +3524,7 @@ class BeamModulePlugin implements Plugin<Project> {
                 includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
                 excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
       ))
-      getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
+      // getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
       getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
       getExecutionData().setFrom(project.files(project.files("${project.buildDir}/jacoco/test.exec")))
       
