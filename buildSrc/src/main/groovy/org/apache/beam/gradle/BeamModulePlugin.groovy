@@ -1330,12 +1330,12 @@ class BeamModulePlugin implements Plugin<Project> {
 
         project.subprojects { subproject ->
           afterEvaluate {
-            println "subproject: ${subproject}"
-            addJacoco(subproject)
-            // if(subproject.tasks.withType(JacocoReport)) {
-            //   println "subproject: ${subproject}"
-            //   addJacoco(subproject)
-            // }
+            // println "subproject: ${subproject}"
+            // addJacoco(subproject)
+            if(subproject.tasks.withType(JacocoReport)) {
+              println "subproject: ${subproject}"
+              addJacoco(subproject)
+            }
           }
         }
       } else {
