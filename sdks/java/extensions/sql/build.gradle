@@ -167,10 +167,10 @@ task generateJacocoTestReport(type: JacocoReport, dependsOn: test) {
   getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
   getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
   getExecutionData().setFrom(fileTree(project.buildDir).include("/jacoco/*.exec"))
-  project.subprojects.each { subproject ->
+  subprojects.each { subproject ->
     subproject.tasks.withType(JacocoReport).each { report ->
         println report
-        // additionalClassDirs report.allClassDirs
+        additionalClassDirs report.allClassDirs
         additionalSourceDirs report.allSourceDirs
     }
     // getAdditionalSourceDirs().setFrom(subproject.sourceSets.main.allSource.srcDirs)
