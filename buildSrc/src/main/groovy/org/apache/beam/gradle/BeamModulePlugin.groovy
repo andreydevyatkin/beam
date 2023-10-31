@@ -524,8 +524,12 @@ class BeamModulePlugin implements Plugin<Project> {
       // https://discuss.gradle.org/t/do-not-cache-if-condition-matched-jacoco-agent-configured-with-append-true-satisfied/23504
       def enabled = project.hasProperty('enableJacocoReport') || graph.allTasks.any { it instanceof JacocoReport || it.name.contains('javaPreCommit') }
       project.tasks.withType(Test) {
-        jacoco.enabled = enabled
+        jacoco {
+          enabled = enabled
+          excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+        }
       }
+
       // project.tasks.withType(JacocoReport) {
       //   def hasSubProjects = project.subprojects.size() > 0
       //   if (hasSubProjects) {
@@ -1323,6 +1327,46 @@ class BeamModulePlugin implements Plugin<Project> {
       //   }
       //   // finalizedBy project.jacocoTestReport
       // }
+
+      project.subprojects {
+        apply plugin: 'application'
+        apply plugin: 'jacoco'
+
+        jacocoTestReport {
+          reports {
+            xml.required = true
+            html.required = true
+          }
+        }
+      }
+
+      project.jacocoTestReport {
+        // dependsOn project.test
+        group = "Reporting"
+        description = "Generates code coverage report for SQL related classes"
+        
+        println "current project: ${project}"
+        getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+                  project.fileTree(
+                          dir: it,
+                          includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+                          excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
+        }))
+        project.subprojects.each { subproject ->
+          subproject.tasks.withType(JacocoReport).each { report ->
+              println "subproject task: ${report}"
+              additionalClassDirs report.allClassDirs
+              additionalSourceDirs report.allSourceDirs
+          }
+        }
+        getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
+        getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
+        getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
+        reports {
+          xml.required = true
+          html.required = true
+        }
+      }
 
       // project.jacocoTestReport {
       //   doFirst {

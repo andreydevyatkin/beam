@@ -22,7 +22,7 @@ import java.util.stream.Collectors
 plugins {
   id 'org.apache.beam.module'
   id 'org.javacc.javacc'
-  id 'jacoco'
+  // id 'jacoco'
 }
 applyJavaNature(
   generatedClassPatterns: [
@@ -134,54 +134,48 @@ dependencies {
   }
 }
 
-subprojects {
-  apply plugin: 'application'
-  apply plugin: 'java'
-  apply plugin: 'jacoco'
+// subprojects {
+//   apply plugin: 'application'
+//   apply plugin: 'java'
+//   apply plugin: 'jacoco'
 
-  jacoco {
-    toolVersion = "0.8.6"
-  }
+//   jacoco {
+//     toolVersion = "0.8.6"
+//   }
 
-  jacocoTestReport {
-    // getAdditionalSourceDirs().setFrom(sourceSets.main.allSource.srcDirs)
-    // getSourceDirectories().setFrom(sourceSets.main.allSource.srcDirs)
-    // getClassDirectories().setFrom(sourceSets.main.output)
+//   jacocoTestReport {
+//     reports {
+//       xml.required = true
+//       html.required = true
+//     }
+//   }
+// }
 
-    reports {
-      xml.required = true
-      html.required = true
-    }
-  }
-}
-
-task generateJacocoTestReport(type: JacocoReport, dependsOn: test) {
-  group = "Reporting"
-  description = "Generates code coverage report for SQL related classes"
-  classDirectories.setFrom(files(files(project.sourceSets.main.output).collect {
-            project.fileTree(
-                    dir: it,
-                    includes: ['**/org/apache/beam/sdk/extensions/sql/**'],
-                    excludes: ['**/AutoValue_*'])
-  }))
-  getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
-  getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
-  getExecutionData().setFrom(fileTree(project.buildDir).include("/jacoco/*.exec"))
-  subprojects.each { subproject ->
-    subproject.tasks.withType(JacocoReport).each { report ->
-        println report
-        additionalClassDirs report.allClassDirs
-        additionalSourceDirs report.allSourceDirs
-    }
-    // getAdditionalSourceDirs().setFrom(subproject.sourceSets.main.allSource.srcDirs)
-    // getSourceDirectories().setFrom(subproject.sourceSets.main.allSource.srcDirs)
-    // getExecutionData().setFrom(subproject.files(subproject.files("${subproject.buildDir}/jacoco/*.exec")))
-  }
-  reports {
-    xml.required = true
-    html.required = true
-  }
-}
+// task generateJacocoTestReport(type: JacocoReport, dependsOn: test) {
+//   println "current project: ${project}"
+//   group = "Reporting"
+//   description = "Generates code coverage report for SQL related classes"
+//   classDirectories.setFrom(files(files(project.sourceSets.main.output).collect {
+//             project.fileTree(
+//                     dir: it,
+//                     includes: ['**/org/apache/beam/sdk/extensions/sql/**'],
+//                     excludes: ['**/AutoValue_*'])
+//   }))
+//   getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
+//   getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
+//   getExecutionData().setFrom(fileTree(project.buildDir).include("/jacoco/*.exec"))
+//   subprojects.each { subproject ->
+//     subproject.tasks.withType(JacocoReport).each { report ->
+//         println "subproject task: ${report}"
+//         additionalClassDirs report.allClassDirs
+//         additionalSourceDirs report.allSourceDirs
+//     }
+//   }
+//   reports {
+//     xml.required = true
+//     html.required = true
+//   }
+// }
 
 hadoopVersions.each {kv ->
   configurations."hadoopVersion$kv.key" {
