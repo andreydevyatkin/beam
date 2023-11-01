@@ -1330,6 +1330,7 @@ class BeamModulePlugin implements Plugin<Project> {
 
       project.subprojects {
         apply plugin: 'application'
+        apply plugin: 'java'
         apply plugin: 'jacoco'
 
         jacocoTestReport {
@@ -1352,16 +1353,16 @@ class BeamModulePlugin implements Plugin<Project> {
                           includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
                           excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
         }))
-        project.subprojects.each { subproject ->
-          subproject.tasks.withType(JacocoReport).each { report ->
-              println "subproject task: ${report}"
-              additionalClassDirs report.allClassDirs
-              additionalSourceDirs report.allSourceDirs
-          }
-        }
         getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
         getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
         getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
+        project.subprojects.each { subproject ->
+          subproject.tasks.withType(JacocoReport).each { report ->
+              println "subproject task: ${report}"
+              getAdditionalClassDirs().setFrom(report.getAllClassDirs())
+              getAdditionalSourceDirs().setFrom(report.getAllSourceDirs())
+          }
+        }
         reports {
           xml.required = true
           html.required = true
