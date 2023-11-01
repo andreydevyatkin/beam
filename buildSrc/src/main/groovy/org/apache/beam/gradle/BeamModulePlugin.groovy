@@ -1323,47 +1323,47 @@ class BeamModulePlugin implements Plugin<Project> {
         // finalizedBy project.jacocoTestReport
       }
 
-      // project.subprojects {
-      //   // apply plugin: 'application'
-      //   // apply plugin: 'java'
-      //   apply plugin: 'jacoco'
+      project.subprojects {
+        apply plugin: 'application'
+        // apply plugin: 'java'
+        apply plugin: 'jacoco'
 
-      //   // jacocoTestReport {
-      //   //   reports {
-      //   //     xml.required = true
-      //   //     html.required = true
-      //   //   }
-      //   // }
-      // }
-
-      project.afterEvaluate {
-        project.jacocoTestReport {
-          // dependsOn project.test
-          group = "Reporting"
-          description = "Generates code coverage report for SQL related classes"
-          
-          println "current project: ${project}"
-          getClassDirectories().setFrom(project.files(project.fileTree(
-                    dir: project.rootDir,
-                    includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                    excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-          )))
-          getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
-          getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
-          getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
-          project.subprojects.each { subproject ->
-            subproject.tasks.withType(JacocoReport).each { report ->
-                println "subproject task: ${report}"
-                getAdditionalClassDirs().setFrom(report.getAllClassDirs())
-                getAdditionalSourceDirs().setFrom(report.getAllSourceDirs())
-            }
-          }
+        jacocoTestReport {
           reports {
             xml.required = true
             html.required = true
           }
         }
       }
+
+      // project.afterEvaluate {
+      //   project.jacocoTestReport {
+      //     // dependsOn project.test
+      //     group = "Reporting"
+      //     description = "Generates code coverage report for SQL related classes"
+          
+      //     println "current project: ${project}"
+      //     getClassDirectories().setFrom(project.files(project.fileTree(
+      //               dir: project.rootDir,
+      //               includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+      //               excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+      //     )))
+      //     getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
+      //     getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
+      //     getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
+      //     project.subprojects.each { subproject ->
+      //       subproject.tasks.withType(JacocoReport).each { report ->
+      //           println "subproject task: ${report}"
+      //           getAdditionalClassDirs().setFrom(report.getAllClassDirs())
+      //           getAdditionalSourceDirs().setFrom(report.getAllSourceDirs())
+      //       }
+      //     }
+      //     reports {
+      //       xml.required = true
+      //       html.required = true
+      //     }
+      //   }
+      // }
 
       // project.jacocoTestReport {
       //   doFirst {
