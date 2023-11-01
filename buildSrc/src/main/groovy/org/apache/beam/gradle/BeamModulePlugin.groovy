@@ -523,12 +523,7 @@ class BeamModulePlugin implements Plugin<Project> {
       // Disable jacoco unless report requested such that task outputs can be properly cached.
       // https://discuss.gradle.org/t/do-not-cache-if-condition-matched-jacoco-agent-configured-with-append-true-satisfied/23504
       def enabled = project.hasProperty('enableJacocoReport') || graph.allTasks.any { it instanceof JacocoReport || it.name.contains('javaPreCommit') }
-      project.tasks.withType(Test) {
-        jacoco {
-          enabled = enabled
-          excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-        }
-      }
+      project.tasks.withType(Test) { jacoco.enabled = enabled }
 
       // project.tasks.withType(JacocoReport) {
       //   def hasSubProjects = project.subprojects.size() > 0
@@ -1320,26 +1315,26 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      // project.test {
-      //   jacoco {
-      //     includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
-      //     excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-      //   }
-      //   // finalizedBy project.jacocoTestReport
-      // }
-
-      project.subprojects {
-        apply plugin: 'application'
-        // apply plugin: 'java'
-        apply plugin: 'jacoco'
-
-        jacocoTestReport {
-          reports {
-            xml.required = true
-            html.required = true
-          }
+      project.test {
+        jacoco {
+          // includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
+          excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
         }
+        // finalizedBy project.jacocoTestReport
       }
+
+      // project.subprojects {
+      //   // apply plugin: 'application'
+      //   // apply plugin: 'java'
+      //   apply plugin: 'jacoco'
+
+      //   // jacocoTestReport {
+      //   //   reports {
+      //   //     xml.required = true
+      //   //     html.required = true
+      //   //   }
+      //   // }
+      // }
 
       project.afterEvaluate {
         project.jacocoTestReport {
