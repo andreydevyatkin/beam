@@ -1359,7 +1359,7 @@ class BeamModulePlugin implements Plugin<Project> {
         project.subprojects.each { subproject ->
           subproject.tasks.withType(JacocoReport).each { report ->
               println "subproject task: ${report}"
-              getAdditionalClassDirs().setFrom(report.getAllClassDirs())
+              // getAdditionalClassDirs().setFrom(report.getAllClassDirs())
               getAdditionalSourceDirs().setFrom(report.getAllSourceDirs())
           }
         }
