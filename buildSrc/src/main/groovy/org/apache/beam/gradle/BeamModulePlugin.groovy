@@ -1353,7 +1353,7 @@ class BeamModulePlugin implements Plugin<Project> {
                     includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
                     excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
           ))
-          // getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
+          getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
           getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
           getExecutionData().setFrom(project.files(project.files("${project.buildDir}/jacoco/test.exec")))
           project.subprojects.each { subproject ->
