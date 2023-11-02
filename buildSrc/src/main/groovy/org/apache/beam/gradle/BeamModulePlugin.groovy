@@ -1343,15 +1343,14 @@ class BeamModulePlugin implements Plugin<Project> {
           description = "Generates code coverage report for SQL related classes"
           
           println "current project: ${project}"
-          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
-                project.fileTree(
-                        dir: it,
-                        includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                        excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
-          }))
-          getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
-          getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
-          getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
+          getClassDirectories().setFrom(project.fileTree(
+                    dir: project.buildDir,
+                    includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+                    excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+          ))
+          getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
+          getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
+          getExecutionData().setFrom(project.files(project.files("${project.buildDir}/jacoco/test.exec")))
           project.subprojects.each { subproject ->
             subproject.tasks.withType(JacocoReport).each { report ->
                 println "subproject task: ${report}"
