@@ -134,17 +134,17 @@ dependencies {
   }
 }
 
-// subprojects {
-//   apply plugin: 'application'
-//   apply plugin: 'jacoco'
+subprojects {
+  apply plugin: 'application'
+  apply plugin: 'jacoco'
 
-//   jacocoTestReport {
-//     reports {
-//       xml.required = true
-//       html.required = true
-//     }
-//   }
-// }
+  jacocoTestReport {
+    reports {
+      xml.required = true
+      html.required = true
+    }
+  }
+}
 
 // task generateJacocoTestReport(type: JacocoReport, dependsOn: test) {
 //   println "current project: ${project}"
