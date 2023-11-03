@@ -1324,8 +1324,7 @@ class BeamModulePlugin implements Plugin<Project> {
       // }
 
       project.subprojects {
-        apply plugin: 'application'
-        // apply plugin: 'java'
+        apply plugin: 'java'
         apply plugin: 'jacoco'
 
         jacocoTestReport {
@@ -1338,21 +1337,21 @@ class BeamModulePlugin implements Plugin<Project> {
           }
         }
       }
-
+      
       project.jacocoTestReport {
-          // dependsOn project.test
-          group = "Reporting"
-          description = "Generates code coverage report for SQL related classes"
+        // dependsOn project.test
+        group = "Reporting"
+        description = "Generates code coverage report for SQL related classes"
 
-          getAdditionalSourceDirs().setFrom(project.files(project.subprojects.sourceSets.main.allSource.srcDirs))
-          getSourceDirectories().setFrom(project.files(project.subprojects.sourceSets.main.allSource.srcDirs))
-          getClassDirectories().setFrom(project.files(project.subprojects.sourceSets.main.output))
-          getExecutionData().setFrom(project.files(project.subprojects.jacocoTestReport.executionData))
-          reports {
-            xml.required = true
-            html.required = true
-          }
+        getAdditionalSourceDirs().setFrom(project.files(project.subprojects.sourceSets.main.allSource.srcDirs))
+        getSourceDirectories().setFrom(project.files(project.subprojects.sourceSets.main.allSource.srcDirs))
+        getClassDirectories().setFrom(project.files(project.subprojects.sourceSets.main.output))
+        getExecutionData().setFrom(project.files(project.subprojects.jacocoTestReport.executionData))
+        reports {
+          xml.required = true
+          html.required = true
         }
+      }
 
       // project.afterEvaluate {
       //   project.jacocoTestReport {
