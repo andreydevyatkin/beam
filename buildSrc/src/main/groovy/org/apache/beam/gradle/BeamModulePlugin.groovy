@@ -1362,32 +1362,32 @@ class BeamModulePlugin implements Plugin<Project> {
       //   }
       // }
 
-      project.afterEvaluate {
-        Set<Project> projectsWithCoverage = project.subprojects.findAll { it.tasks.withType(JacocoReport) }
+      // project.afterEvaluate {
+      //   Set<Project> projectsWithCoverage = project.subprojects.findAll { it.tasks.withType(JacocoReport) }
 
-        project.jacocoTestReport {
-          it.with {
-            group = "Reporting"
-            description = "Generates code coverage report for SQL related classes"
+      //   project.jacocoTestReport {
+      //     it.with {
+      //       group = "Reporting"
+      //       description = "Generates code coverage report for SQL related classes"
 
-            println "projectsWithCoverage: ${projectsWithCoverage}"
+      //       println "projectsWithCoverage: ${projectsWithCoverage}"
             
-            getClassDirectories().setFrom(project.files(project.files(projectsWithCoverage.sourceSets.main.output).collect {
-                  project.fileTree(
-                          dir: it,
-                          includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                          excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
-            }))
-            getAdditionalSourceDirs().setFrom(project.files(projectsWithCoverage.sourceSets.main.allSource.srcDirs))
-            getSourceDirectories().setFrom(project.files(projectsWithCoverage.sourceSets.main.allSource.srcDirs))
-            getExecutionData().setFrom(project.files(project.files("${project.buildDir}/jacoco/test.exec")))
-            reports {
-              xml.required = true
-              html.required = true
-            }
-          }
-        }
-      }
+      //       getClassDirectories().setFrom(project.files(project.files(projectsWithCoverage.sourceSets.main.output).collect {
+      //             project.fileTree(
+      //                     dir: it,
+      //                     includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+      //                     excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
+      //       }))
+      //       getAdditionalSourceDirs().setFrom(project.files(projectsWithCoverage.sourceSets.main.allSource.srcDirs))
+      //       getSourceDirectories().setFrom(project.files(projectsWithCoverage.sourceSets.main.allSource.srcDirs))
+      //       getExecutionData().setFrom(project.files(project.files("${project.buildDir}/jacoco/test.exec")))
+      //       reports {
+      //         xml.required = true
+      //         html.required = true
+      //       }
+      //     }
+      //   }
+      // }
       
       // project.jacocoTestReport {
       //   // dependsOn project.test
