@@ -1324,8 +1324,8 @@ class BeamModulePlugin implements Plugin<Project> {
       // }
 
       project.subprojects {
-        apply plugin: 'java'
-        apply plugin: 'jacoco'
+        apply plugin: "java"
+        apply plugin: "jacoco"
 
         jacocoTestReport {
           getAdditionalSourceDirs().setFrom(files(sourceSets.main.allSource.srcDirs))
@@ -1338,23 +1338,54 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      project.jacocoTestReport {
-        // dependsOn project.test
-        group = "Reporting"
-        description = "Generates code coverage report for SQL related classes"
-        
-        getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
-              project.fileTree(
-                      dir: it,
-                      includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                      excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
-        }))
-        getAdditionalSourceDirs().setFrom(project.files(project.subprojects.sourceSets.main.allSource.srcDirs))
-        getSourceDirectories().setFrom(project.files(project.subprojects.sourceSets.main.allSource.srcDirs))
-        getExecutionData().setFrom(project.files(project.subprojects.jacocoTestReport.executionData))
-        reports {
-          xml.required = true
-          html.required = true
+      // project.plugins.withType(JacocoPlugin) {
+      //   Set<Project> projectsWithCoverage = project.subprojects.findAll { it.tasks.withType(JacocoReport) }
+
+      //   println "projectsWithCoverage: ${projectsWithCoverage}"
+
+      //   project.jacocoTestReport {
+      //     it.with {
+      //       description = 'Generates aggregated jacoco coverage report'
+      //       dependsOn 'test'
+      //       // show task in common place
+      //       group = 'verification'
+      //       getExecutionData().setFrom(project.files(projectsWithCoverage
+      //               .collect { it.file("${it.buildDir}/jacoco/test.exec") })
+      //               .filter { it.exists() })
+      //       getSourceDirectories().setFrom(project.files(projectsWithCoverage.sourceSets.main.allSource.srcDirs))
+      //       getClassDirectories().setFrom(project.files(projectsWithCoverage.sourceSets.main.output))
+      //       reports {
+      //         xml.required = true
+      //         html.required = true
+      //       }
+      //     }
+      //   }
+      // }
+
+      project.afterEvaluate {
+        Set<Project> projectsWithCoverage = project.subprojects.findAll { it.tasks.withType(JacocoReport) }
+
+        project.jacocoTestReport {
+          it.with {
+            group = "Reporting"
+            description = "Generates code coverage report for SQL related classes"
+
+            println "projectsWithCoverage: ${projectsWithCoverage}"
+            
+            getClassDirectories().setFrom(project.files(project.files(projectsWithCoverage.sourceSets.main.output).collect {
+                  project.fileTree(
+                          dir: it,
+                          includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+                          excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
+            }))
+            getAdditionalSourceDirs().setFrom(project.files(projectsWithCoverage.sourceSets.main.allSource.srcDirs))
+            getSourceDirectories().setFrom(project.files(projectsWithCoverage.sourceSets.main.allSource.srcDirs))
+            getExecutionData().setFrom(project.files(project.files("${project.buildDir}/jacoco/test.exec")))
+            reports {
+              xml.required = true
+              html.required = true
+            }
+          }
         }
       }
       
