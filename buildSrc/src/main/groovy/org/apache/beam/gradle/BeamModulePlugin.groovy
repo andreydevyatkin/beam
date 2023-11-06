@@ -1315,13 +1315,13 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      // project.test {
-      //   jacoco {
-      //     includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
-      //     excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-      //   }
-      //   // finalizedBy project.jacocoTestReport
-      // }
+      project.test {
+        jacoco {
+          includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
+          excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+        }
+        // finalizedBy project.jacocoTestReport
+      }
 
       project.subprojects {
         apply plugin: "java"
@@ -1340,8 +1340,8 @@ class BeamModulePlugin implements Plugin<Project> {
 
       project.afterEvaluate {
         project.jacocoTestReport {
-          // dependsOn project.test
-          dependsOn project.compileJava
+          dependsOn project.test
+          // dependsOn project.tasks.compileJava
           group = "Reporting"
           description = "Generates code coverage report"
           getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
