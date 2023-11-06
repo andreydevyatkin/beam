@@ -1328,9 +1328,9 @@ class BeamModulePlugin implements Plugin<Project> {
         apply plugin: "jacoco"
 
         jacocoTestReport {
-          getAdditionalSourceDirs().setFrom(files(sourceSets.main.allSource.srcDirs))
-          getSourceDirectories().setFrom(files(sourceSets.main.allSource.srcDirs))
-          getClassDirectories().setFrom(files(sourceSets.main.output))
+          // getAdditionalSourceDirs().setFrom(files(sourceSets.main.allSource.srcDirs))
+          // getSourceDirectories().setFrom(files(sourceSets.main.allSource.srcDirs))
+          // getClassDirectories().setFrom(files(sourceSets.main.output))
           reports {
             xml.required = true
             html.required = true
@@ -1341,13 +1341,15 @@ class BeamModulePlugin implements Plugin<Project> {
       project.afterEvaluate {
         project.jacocoTestReport {
           // dependsOn project.test
+          dependsOn project.compileJava
           group = "Reporting"
           description = "Generates code coverage report"
-          getClassDirectories().setFrom(project.fileTree(
-                    dir: project.buildDir,
+          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+                project.fileTree(
+                    dir: it,
                     includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                    excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-          ))
+                    excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
+          }))
           // getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
           getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
           getExecutionData().setFrom(project.files(project.files("${project.buildDir}/jacoco/test.exec")))
