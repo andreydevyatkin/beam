@@ -1342,11 +1342,12 @@ class BeamModulePlugin implements Plugin<Project> {
         project.jacocoTestReport {
           group = "Reporting"
           description = "Generates code coverage report"
-          getClassDirectories().setFrom(project.fileTree(
-                    dir: project.buildDir,
-                    includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                    excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-          ))
+          getClassDirectories().setFrom(subproject.files(subproject.files(subproject.sourceSets.main.output).collect {
+                subproject.fileTree(
+                        dir: it,
+                        includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+                        excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
+          }))
           // getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
           getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
           getExecutionData().setFrom(project.files(project.files("${project.buildDir}/jacoco/test.exec")))
@@ -1355,13 +1356,7 @@ class BeamModulePlugin implements Plugin<Project> {
             subproject.tasks.withType(JacocoReport).each { report ->
               dependsOn report
 
-              println "subproject task: ${report}"
-              getClassDirectories().setFrom(subproject.files(subproject.files(subproject.sourceSets.main.output).collect {
-                    subproject.fileTree(
-                            dir: it,
-                            includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                            excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
-              }))
+              println "subproject task: ${report}"          
               getAdditionalClassDirs().setFrom(report.getAllClassDirs())
               getAdditionalSourceDirs().setFrom(report.getAllSourceDirs())
             }
