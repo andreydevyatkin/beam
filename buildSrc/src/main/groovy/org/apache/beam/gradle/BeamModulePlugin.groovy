@@ -1350,7 +1350,7 @@ class BeamModulePlugin implements Plugin<Project> {
           }))
           getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
           getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-          getExecutionData().setFrom(fileTree(project.buildDir).include("/jacoco/*.exec"))
+          getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
           
           project.subprojects.each { subproject ->
             subproject.tasks.withType(JacocoReport).each { report ->
