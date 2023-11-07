@@ -1363,9 +1363,9 @@ class BeamModulePlugin implements Plugin<Project> {
           }
           reports {
             xml.required = true
-            xml.outputLocation = project.rootProject.layout.buildDirectory.dir("jacoco_results")
+            xml.destination = file("${project.rootProject.buildDir}/jacoco_results/xml")
             html.required = true
-            html.outputLocation = project.rootProject.layout.buildDirectory.dir("jacoco_results")
+            html.destination = file("${project.rootProject.buildDir}/jacoco_results/html")
           }
         }
       }
