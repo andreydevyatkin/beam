@@ -1342,8 +1342,8 @@ class BeamModulePlugin implements Plugin<Project> {
         project.jacocoTestReport {
           group = "Reporting"
           description = "Generates code coverage report"
-          getClassDirectories().setFrom(subproject.files(subproject.files(subproject.sourceSets.main.output).collect {
-                subproject.fileTree(
+          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+                project.fileTree(
                         dir: it,
                         includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
                         excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
