@@ -1342,28 +1342,30 @@ class BeamModulePlugin implements Plugin<Project> {
         project.jacocoTestReport {
           group = "Reporting"
           description = "Generates code coverage report"
-          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+          getClassDirectories().setFrom(project.files(
                 project.fileTree(
-                        dir: it,
+                        dir: project.rootDir,
                         includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
                         excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
-          }))
+          ))
           getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
           getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
           getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
           
           project.subprojects.each { subproject ->
             subproject.tasks.withType(JacocoReport).each { report ->
-              dependsOn report
-
-              println "subproject task: ${report}"          
+              // dependsOn subproject.processResources
+              // dependsOn subproject.compileJava
+              println "subproject task: ${report}"
               getAdditionalClassDirs().setFrom(report.getAllClassDirs())
               getAdditionalSourceDirs().setFrom(report.getAllSourceDirs())
             }
           }
           reports {
             xml.required = true
+            xml.outputLocation = project.rootProject.layout.buildDirectory.dir("jacoco_results")
             html.required = true
+            html.outputLocation = project.rootProject.layout.buildDirectory.dir("jacoco_results")
           }
         }
       }

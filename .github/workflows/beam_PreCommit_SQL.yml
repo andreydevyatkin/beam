@@ -116,7 +116,7 @@ jobs:
         if: always()
         id: jacoco_report_path
         run: |
-          echo "path=sdks/java/extensions/sql/build/reports/jacoco/test" >> $GITHUB_OUTPUT
+          echo "path=sdks/java/extensions/sql/" >> $GITHUB_OUTPUT
       - name: Archive Jacoco Results
         uses: actions/upload-artifact@v3
         if: always()
