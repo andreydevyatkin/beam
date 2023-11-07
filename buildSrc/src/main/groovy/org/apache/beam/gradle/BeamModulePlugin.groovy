@@ -1353,15 +1353,17 @@ class BeamModulePlugin implements Plugin<Project> {
           
           project.subprojects.each { subproject ->
             subproject.tasks.withType(JacocoReport).each { report ->
-                println "subproject task: ${report}"
-                getClassDirectories().setFrom(subproject.files(subproject.files(subproject.sourceSets.main.output).collect {
-                      subproject.fileTree(
-                              dir: it,
-                              includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                              excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
-                }))
-                getAdditionalClassDirs().setFrom(report.getAllClassDirs())
-                getAdditionalSourceDirs().setFrom(report.getAllSourceDirs())
+              dependsOn report
+
+              println "subproject task: ${report}"
+              getClassDirectories().setFrom(subproject.files(subproject.files(subproject.sourceSets.main.output).collect {
+                    subproject.fileTree(
+                            dir: it,
+                            includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+                            excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
+              }))
+              getAdditionalClassDirs().setFrom(report.getAllClassDirs())
+              getAdditionalSourceDirs().setFrom(report.getAllSourceDirs())
             }
           }
           reports {
