@@ -1328,9 +1328,6 @@ class BeamModulePlugin implements Plugin<Project> {
         apply plugin: "jacoco"
 
         jacocoTestReport {
-          // getAdditionalSourceDirs().setFrom(files(sourceSets.main.allSource.srcDirs))
-          // getSourceDirectories().setFrom(files(sourceSets.main.allSource.srcDirs))
-          // getClassDirectories().setFrom(files(sourceSets.main.output))
           reports {
             xml.required = true
             html.required = true
@@ -1357,8 +1354,8 @@ class BeamModulePlugin implements Plugin<Project> {
               // dependsOn subproject.processResources
               // dependsOn subproject.compileJava
               println "subproject task: ${report}"
-              getAdditionalClassDirs().setFrom(report.getAllClassDirs())
-              getAdditionalSourceDirs().setFrom(report.getAllSourceDirs())
+              getAdditionalClassDirs().from(report.getAllClassDirs())
+              getAdditionalSourceDirs().from(report.getAllSourceDirs())
             }
           }
           reports {
