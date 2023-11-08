@@ -1340,8 +1340,8 @@ class BeamModulePlugin implements Plugin<Project> {
 
         group = "Reporting"
         description = "Generates aggregated code coverage report"
-        classDirectories.setFrom(project.subprojects.flatMap { subproject ->
-          subproject.sourceSets.main.output.classesDirs.map {
+        classDirectories.setFrom(project.files(project.subprojects.collectMany { subproject ->
+          subproject.sourceSets.main.output.classesDirs.collect {
             subproject.fileTree(
               dir: it,
               includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
