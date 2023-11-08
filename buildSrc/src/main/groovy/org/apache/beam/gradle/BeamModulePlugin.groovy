@@ -1335,34 +1335,34 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      project.afterEvaluate {
-        project.jacocoTestReport {
-          group = "Reporting"
-          description = "Generates code coverage report"
-          getClassDirectories().setFrom(project.files(
-                project.fileTree(
-                        dir: project.rootDir,
-                        includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                        excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
-          ))
-          getAdditionalSourceDirs().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-          getSourceDirectories().setFrom(project.files(project.sourceSets.main.allSource.srcDirs))
-          getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
-          
-          project.subprojects.each { subproject ->
-            subproject.tasks.withType(JacocoReport).each { report ->
-              // dependsOn subproject.processResources
-              // dependsOn subproject.compileJava
-              println "subproject task: ${report}"
-              getAdditionalClassDirs().from(report.getAllClassDirs())
-              getAdditionalSourceDirs().from(report.getAllSourceDirs())
-            }
+      project.tasks.register('generateJacocoReport', JacocoReport) {
+        dependsOn project.subprojects.test
+
+        group = "Reporting"
+        description = "Generates aggregated code coverage report"
+        classDirectories.setFrom(project.subprojects.flatMap { subproject ->
+          subproject.sourceSets.main.output.classesDirs.map {
+            subproject.fileTree(
+              dir: it,
+              includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+              excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+            )
           }
-          reports {
-            xml.required = true
-            xml.destination = project.file("${project.rootProject.buildDir}/jacoco_results/xml")
-            html.required = true
-            html.destination = project.file("${project.rootProject.buildDir}/jacoco_results/html")
+        }))
+        additionalSourceDirs.from(project.sourceSets.main.allSource.srcDirs)
+        sourceDirectories.from(project.sourceSets.main.allSource.srcDirs)
+        executionData.from(project.subprojects.jacocoTestReport.executionData)
+
+        reports {
+          xml.required = true
+          html.required = true
+        }
+      }
+
+      project.afterEvaluate {
+        project.tasks.named('generateJacocoReport').configure { task ->
+          project.subprojects.each { subproject ->
+            task.dependsOn(subproject.tasks.withType(JacocoReport))
           }
         }
       }
