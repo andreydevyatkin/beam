@@ -1348,7 +1348,7 @@ class BeamModulePlugin implements Plugin<Project> {
               excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
             )
           }
-        })
+        }))
         additionalSourceDirs.from(project.sourceSets.main.allSource.srcDirs)
         sourceDirectories.from(project.sourceSets.main.allSource.srcDirs)
         executionData.from(project.subprojects.jacocoTestReport.executionData)
