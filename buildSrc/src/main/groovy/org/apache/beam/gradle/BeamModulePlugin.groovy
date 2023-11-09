@@ -1346,12 +1346,11 @@ class BeamModulePlugin implements Plugin<Project> {
       }
 
       project.tasks.register('generateJacocoReport', JacocoReport) {
-        // dependsOn(project.subprojects.collect { it.tasks.withType(JacocoReport) }.flatten())
+        dependsOn project.subprojects.jacocoTestReport
         group = "Reporting"
         description = "Generates aggregated code coverage report"
         executionData.setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
         project.subprojects.each { subproject ->
-          dependsOn(subproject.tasks.named('jacocoTestReport'))
           def includes = subproject.hasProperty('jacocoIncludes') ? subproject.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
           def excludes = subproject.hasProperty('jacocoExcludes') ? subproject.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes      
           additionalClassDirs.from(subproject.sourceSets.main.output.asFileTree.matching {
