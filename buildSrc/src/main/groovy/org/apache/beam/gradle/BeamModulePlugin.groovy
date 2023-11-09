@@ -1346,18 +1346,19 @@ class BeamModulePlugin implements Plugin<Project> {
       }
 
       project.tasks.register('generateJacocoReport', JacocoReport) {
-        dependsOn(project.subprojects.collect { it.tasks.withType(JacocoReport) }.flatten())
+        // dependsOn(project.subprojects.collect { it.tasks.withType(JacocoReport) }.flatten())
         group = "Reporting"
         description = "Generates aggregated code coverage report"
         executionData.setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
-        project.subprojects.each { sub ->
-          def includes = sub.hasProperty('jacocoIncludes') ? sub.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
-          def excludes = sub.hasProperty('jacocoExcludes') ? sub.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes      
-          additionalClassDirs.from(sub.sourceSets.main.output.asFileTree.matching {
+        project.subprojects.each { subproject ->
+          dependsOn(subproject.tasks.named('jacocoTestReport'))
+          def includes = subproject.hasProperty('jacocoIncludes') ? subproject.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
+          def excludes = subproject.hasProperty('jacocoExcludes') ? subproject.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes      
+          additionalClassDirs.from(subproject.sourceSets.main.output.asFileTree.matching {
             include(includes)
             exclude(excludes)
           })
-          additionalSourceDirs.from(sub.sourceSets.main.allSource.srcDirs)
+          additionalSourceDirs.from(subproject.sourceSets.main.allSource.srcDirs)
         }
 
         reports {
