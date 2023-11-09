@@ -1323,27 +1323,6 @@ class BeamModulePlugin implements Plugin<Project> {
       //   // finalizedBy project.jacocoTestReport
       // }
 
-      project.tasks.register('generateJacocoReport', JacocoReport) {
-        dependsOn(project.subprojects.collect { it.tasks.named('test') })
-        group = "Reporting"
-        description = "Generates aggregated code coverage report"
-        executionData.setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
-        project.subprojects.each { sub ->
-          def includes = sub.hasProperty('jacocoIncludes') ? sub.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
-          def excludes = sub.hasProperty('jacocoExcludes') ? sub.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes      
-          additionalClassDirs.from(sub.sourceSets.main.output.asFileTree.matching {
-            include(includes)
-            exclude(excludes)
-          })
-          additionalSourceDirs.from(sub.sourceSets.main.allSource.srcDirs)
-        }
-
-        reports {
-          xml.required = true
-          html.required = true
-        }
-      }
-
       project.subprojects { subproject ->
         apply plugin: "java"
         apply plugin: "jacoco"
@@ -1363,6 +1342,27 @@ class BeamModulePlugin implements Plugin<Project> {
               xml.required = true
               html.required = true
           }
+        }
+      }
+
+      project.tasks.register('generateJacocoReport', JacocoReport) {
+        dependsOn(project.subprojects.collect { it.tasks.withType(JacocoReport) }.flatten())
+        group = "Reporting"
+        description = "Generates aggregated code coverage report"
+        executionData.setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
+        project.subprojects.each { sub ->
+          def includes = sub.hasProperty('jacocoIncludes') ? sub.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
+          def excludes = sub.hasProperty('jacocoExcludes') ? sub.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes      
+          additionalClassDirs.from(sub.sourceSets.main.output.asFileTree.matching {
+            include(includes)
+            exclude(excludes)
+          })
+          additionalSourceDirs.from(sub.sourceSets.main.allSource.srcDirs)
+        }
+
+        reports {
+          xml.required = true
+          html.required = true
         }
       }
 
