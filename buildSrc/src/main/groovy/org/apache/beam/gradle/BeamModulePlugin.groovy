@@ -1323,21 +1323,20 @@ class BeamModulePlugin implements Plugin<Project> {
       //   // finalizedBy project.jacocoTestReport
       // }
 
-      project.tasks.create('generateJacocoReport', JacocoReport) {
+      project.tasks.register('generateJacocoReport', JacocoReport) {
         // dependsOn = project.subprojects.collect { it.tasks.withType(Test) }
-
         group = "Reporting"
         description = "Generates aggregated code coverage report"
-        classDirectories.from(project.files(project.subprojects.collect { subproject ->
-          subproject.fileTree(
-            dir: subproject.sourceSets.main.output.classesDirs,
-            includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-            excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-          )
-        }))
-        additionalSourceDirs.from(project.files(project.subprojects.collect { it.sourceSets.main.allSource.srcDirs }))
-        sourceDirectories.from(project.files(project.subprojects.collect { it.sourceSets.main.allSource.srcDirs }))
-        executionData.from(project.files(project.subprojects.collect { it.tasks.withType(Test).collect { testTask -> testTask.outputs.files } }))
+        executionData.setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
+        project.subprojects.each { sub ->
+          def includes = sub.hasProperty('jacocoIncludes') ? sub.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
+          def excludes = sub.hasProperty('jacocoExcludes') ? sub.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes      
+          additionalClassDirs.from(sub.sourceSets.main.output.asFileTree.matching {
+            include(includes)
+            exclude(excludes)
+          })
+          additionalSourceDirs.from(sub.sourceSets.main.allSource.srcDirs)
+        }
 
         reports {
           xml.required = true
@@ -1349,8 +1348,21 @@ class BeamModulePlugin implements Plugin<Project> {
         apply plugin: "java"
         apply plugin: "jacoco"
 
-        subproject.tasks.withType(Test).configureEach { testTask ->
-          testTask.finalizedBy project.tasks.getByName('generateJacocoReport')
+        subproject.tasks.named('jacocoTestReport', JacocoReport) {
+          dependsOn(subproject.tasks.test)
+
+          def includes = subproject.hasProperty('jacocoIncludes') ? subproject.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
+          def excludes = subproject.hasProperty('jacocoExcludes') ? subproject.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+          classDirectories.setFrom(subproject.files(subproject.sourceSets.main.output).asFileTree.matching {
+            include(includes)
+            exclude(excludes)
+          })
+          additionalSourceDirs.setFrom(subproject.files(subproject.sourceSets.main.allSource.srcDirs))
+          executionData.setFrom(subproject.fileTree(subproject.buildDir).include("/jacoco/*.exec"))
+          reports {
+              xml.required = true
+              html.required = true
+          }
         }
       }
 
