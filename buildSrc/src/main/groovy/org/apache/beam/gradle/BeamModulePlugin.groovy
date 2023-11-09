@@ -1324,7 +1324,7 @@ class BeamModulePlugin implements Plugin<Project> {
       // }
 
       project.tasks.create('generateJacocoReport', JacocoReport) {
-        dependsOn = project.subprojects.collect { it.tasks.withType(Test) }
+        // dependsOn = project.subprojects.collect { it.tasks.withType(Test) }
 
         group = "Reporting"
         description = "Generates aggregated code coverage report"
