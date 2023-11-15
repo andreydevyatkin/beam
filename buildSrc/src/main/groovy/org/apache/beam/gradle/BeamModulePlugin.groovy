@@ -1323,6 +1323,27 @@ class BeamModulePlugin implements Plugin<Project> {
       //   }
       //   // finalizedBy project.jacocoTestReport
       // }
+      project.tasks.register('generateJacocoReport', JacocoReport) {
+        project.subprojects.each { subproject ->
+          subproject.tasks.withType(Test).each { testTask ->
+            // Add explicit dependency on test task
+            dependsOn testTask
+          }
+        }
+        classDirectories.setFrom(project.fileTree(
+          dir: project.buildDir,
+          includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+          excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+        ))
+        executionData.setFrom(project.fileTree("${project.buildDir}/jacoco").include('*.exec'))
+        sourceDirectories.setFrom(project.files(project.subprojects.sourceSets.main.allSource.srcDirs))
+
+        reports {
+          xml.required = true
+          html.required = true
+        }
+      }
+
       project.subprojects { subproject ->
         apply plugin: "java"
         subproject.plugins.apply(JacocoPlugin)
@@ -1353,30 +1374,6 @@ class BeamModulePlugin implements Plugin<Project> {
             xml.required = true
             html.required = true
           }
-        }
-      }
-
-      project.tasks.register('generateJacocoReport', JacocoReport) {
-        def testTasks = []
-        project.subprojects.each { subproject ->
-          subproject.tasks.withType(Test).each { testTask ->
-            testTasks.add(testTask)
-          }
-        }
-
-        dependsOn testTasks
-
-        classDirectories.setFrom(project.fileTree(
-          dir: project.buildDir,
-          includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-          excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-        ))
-        executionData.setFrom(project.fileTree("${project.buildDir}/jacoco").include('*.exec'))
-        sourceDirectories.setFrom(project.files(project.subprojects.sourceSets.main.allSource.srcDirs))
-
-        reports {
-            xml.required = true
-            html.required = true
         }
       }
 
