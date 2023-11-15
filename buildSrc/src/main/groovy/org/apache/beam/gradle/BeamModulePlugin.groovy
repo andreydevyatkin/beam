@@ -1334,22 +1334,24 @@ class BeamModulePlugin implements Plugin<Project> {
         }
 
         println "subproject ${subproject}"
-        if (!subproject.tasks.findByName("jacocoTestReport")) {
-          subproject.tasks.register('jacocoTestReport', JacocoReport) {
-            dependsOn subproject.tasks.withType(Test)
+        subproject.tasks.withType(JacocoReport).configureEach { jacocoTestReportTask ->
+          def testTasks = []
+          subproject.tasks.withType(Test).each { testTask ->
+            testTasks.add(testTask)
+          }
+          jacocoTestReportTask.dependsOn testTasks
 
-            classDirectories.setFrom(subproject.fileTree(
-              dir: subproject.buildDir,
-              includes: subproject.hasProperty('jacocoIncludes') ? subproject.property('jacocoIncludes').split(',') : configuration.jacocoIncludes,
-              excludes: subproject.hasProperty('jacocoExcludes') ? subproject.property('jacocoExcludes').split(',') : configuration.jacocoExcludes
-            ))
-            executionData.setFrom(subproject.fileTree("${project.buildDir}/jacoco").include('*.exec'))
-            sourceDirectories.setFrom(subproject.files(subproject.sourceSets.main.allSource.srcDirs))
+          jacocoTestReportTask.classDirectories.setFrom(subproject.fileTree(
+            dir: subproject.buildDir,
+            includes: subproject.hasProperty('jacocoIncludes') ? subproject.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+            excludes: subproject.hasProperty('jacocoExcludes') ? subproject.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+          ))
+          jacocoTestReportTask.executionData.setFrom(subproject.fileTree("${project.buildDir}/jacoco").include('*.exec'))
+          jacocoTestReportTask.sourceDirectories.setFrom(subproject.files(subproject.sourceSets.main.allSource.srcDirs))
 
-            reports {
-              xml.required = true
-              html.required = true
-            }
+          jacocoTestReportTask.reports {
+            xml.required = true
+            html.required = true
           }
         }
       }
