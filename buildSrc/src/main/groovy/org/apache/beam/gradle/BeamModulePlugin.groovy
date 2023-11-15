@@ -1355,11 +1355,14 @@ class BeamModulePlugin implements Plugin<Project> {
       }
 
       project.tasks.register('generateJacocoReport', JacocoReport) {
+        def testTasks = []
         project.subprojects.each { subproject ->
           subproject.tasks.withType(Test).each { testTask ->
-            dependsOn testTask
+            testTasks.add(testTask)
           }
         }
+
+        dependsOn testTasks
 
         classDirectories.setFrom(project.fileTree(
           dir: project.buildDir,
