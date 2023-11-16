@@ -1343,11 +1343,12 @@ class BeamModulePlugin implements Plugin<Project> {
           description = "Generates code coverage report for SQL related classes"
           
           println "current project: ${project}"
-          getClassDirectories().setFrom(project.files(project.fileTree(
+          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+            project.fileTree(
                     dir: project.buildDir,
                     includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                    excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-          )))
+                    excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
+          }))
           getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
           getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
           getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
