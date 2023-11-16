@@ -1324,21 +1324,44 @@ class BeamModulePlugin implements Plugin<Project> {
       //   // finalizedBy project.jacocoTestReport
       // }
 
-      def hasSubProjects = project.subprojects.size() > 0
-      if (hasSubProjects) {
-        println "number of subprojects: ${project.subprojects.size()}"
-        project.subprojects { subproject ->
-          apply plugin: "java"
-          apply plugin: "jacoco"
-          afterEvaluate {
-            println "subproject: ${subproject}"    
-            addJacoco(subproject)
+      project.subprojects {
+        apply plugin: "java"
+        apply plugin: "jacoco"
+
+        jacocoTestReport {
+          reports {
+            xml.required = true
+            html.required = true
           }
         }
-      } else {
-        project.afterEvaluate {
-          println "project: ${project}"
-          addJacoco(project)
+      }
+
+      project.afterEvaluate {
+        project.jacocoTestReport {
+          // dependsOn project.test
+          group = "Reporting"
+          description = "Generates code coverage report for SQL related classes"
+          
+          println "current project: ${project}"
+          getClassDirectories().setFrom(project.files(project.fileTree(
+                    dir: project.buildDir,
+                    includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+                    excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+          )))
+          getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
+          getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
+          getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
+          project.subprojects.each { subproject ->
+            subproject.tasks.withType(JacocoReport).each { report ->
+                println "subproject task: ${report}"
+                getAdditionalClassDirs().from(report.getAllClassDirs())
+                getAdditionalSourceDirs().from(report.getAllSourceDirs())
+            }
+          }
+          reports {
+            xml.required = true
+            html.required = true
+          }
         }
       }
 
