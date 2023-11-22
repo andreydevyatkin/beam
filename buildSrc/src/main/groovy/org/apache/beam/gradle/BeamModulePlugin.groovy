@@ -1335,16 +1335,14 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      project.afterEvaluate {
-        project.jacocoTestReport {
-          // dependsOn project.test
+      project.task('generateJacocoReport', type: JacocoReport, dependsOn: project.test) {
+        doLast{
+          println "from generateJacocoReport: ${project}"
           group = "Reporting"
           description = "Generates code coverage report for SQL related classes"
-
-          println "current project: ${project}"
-          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+          classDirectories.setFrom(project.files(project.files(project.sourceSets.main.output).collect {
             project.fileTree(
-                    dir: project.buildDir,
+                    dir: it,
                     includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
                     excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
           }))
@@ -1354,8 +1352,8 @@ class BeamModulePlugin implements Plugin<Project> {
           project.subprojects.each { subproject ->
             subproject.tasks.withType(JacocoReport).each { report ->
                 println "subproject task: ${report}"
-                getAdditionalClassDirs().from(report.getAllClassDirs())
-                getAdditionalSourceDirs().from(report.getAllSourceDirs())
+                additionalClassDirs report.allClassDirs
+                additionalSourceDirs report.allSourceDirs
             }
           }
           reports {
