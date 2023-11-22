@@ -1316,13 +1316,13 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      // project.test {
-      //   jacoco {
-      //     includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
-      //     excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
-      //   }
-      //   // finalizedBy project.jacocoTestReport
-      // }
+      project.test {
+        jacoco {
+          includes = project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes
+          excludes = project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes
+        }
+        // finalizedBy project.jacocoTestReport
+      }
 
       project.subprojects {
         apply plugin: "java"
@@ -1335,12 +1335,12 @@ class BeamModulePlugin implements Plugin<Project> {
         }
       }
 
-      project.task('generateJacocoReport', type: JacocoReport, dependsOn: project.test) {
-        doLast{
+      project.task('generateJacocoReport', type: JacocoReport) {
+        doFirst {
           println "from generateJacocoReport: ${project}"
           group = "Reporting"
           description = "Generates code coverage report for SQL related classes"
-          classDirectories.setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
             project.fileTree(
                     dir: it,
                     includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
