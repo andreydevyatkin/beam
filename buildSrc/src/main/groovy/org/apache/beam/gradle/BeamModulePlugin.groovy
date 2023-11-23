@@ -1336,36 +1336,34 @@ class BeamModulePlugin implements Plugin<Project> {
       }
 
       project.tasks.register('generateJacocoReport', JacocoReport) {
-        doFirst {
-          def testTasks = []
-          project.tasks.withType(Test).each { testTask ->
-            testTasks.add(testTask)
-          }
-          dependsOn testTasks
+        // def testTasks = []
+        // project.tasks.withType(Test).each { testTask ->
+        //   testTasks.add(testTask)
+        // }
+        // dependsOn testTasks
 
-          println "from generateJacocoReport: ${project}"
-          group = "Reporting"
-          description = "Generates code coverage report for SQL related classes"
-          getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
-            project.fileTree(
-                    dir: it,
-                    includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
-                    excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
-          }))
-          getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
-          getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
-          getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
-          project.subprojects.each { subproject ->
-            subproject.tasks.withType(JacocoReport).each { report ->
-                println "subproject task: ${report}"
-                additionalClassDirs.from(report.allClassDirs)
-                additionalSourceDirs.from(report.allSourceDirs)
-            }
+        println "from generateJacocoReport: ${project}"
+        group = "Reporting"
+        description = "Generates code coverage report for SQL related classes"
+        getClassDirectories().setFrom(project.files(project.files(project.sourceSets.main.output).collect {
+          project.fileTree(
+                  dir: it,
+                  includes: project.hasProperty('jacocoIncludes') ? project.property('jacocoIncludes').split(',') as List<String> : configuration.jacocoIncludes,
+                  excludes: project.hasProperty('jacocoExcludes') ? project.property('jacocoExcludes').split(',') as List<String> : configuration.jacocoExcludes)
+        }))
+        getAdditionalSourceDirs().setFrom(project.sourceSets.main.allSource.srcDirs)
+        getSourceDirectories().setFrom(project.sourceSets.main.allSource.srcDirs)
+        getExecutionData().setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
+        project.subprojects.each { subproject ->
+          subproject.tasks.withType(JacocoReport).each { report ->
+              println "subproject task: ${report}"
+              additionalClassDirs.from(report.allClassDirs)
+              additionalSourceDirs.from(report.allSourceDirs)
           }
-          reports {
-            xml.required = true
-            html.required = true
-          }
+        }
+        reports {
+          xml.required = true
+          html.required = true
         }
       }
 
