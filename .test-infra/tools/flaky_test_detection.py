@@ -21,9 +21,8 @@ from github import Auth
 
 
 GIT_ORG = "apache"
-GIT_REPO = "beam"
-GRAFANA_URL = "https://metrics.beam.apache.org"
-ALERT_NAME = "flaky_test"
+GRAFANA_URL = "https://tempgrafana.volatilemolotov.com"
+ALERT_NAME = "flaky_test_dev"
 READ_ONLY = os.environ.get("READ_ONLY", "false")
 
 
@@ -103,7 +102,7 @@ def main():
     token = os.environ["GITHUB_TOKEN"]
     auth = Auth.Token(token)
     g = Github(auth=auth)
-    repo = g.get_repo(f"{GIT_ORG}/{GIT_REPO}")
+    repo = g.get_repo(f"{GIT_ORG}/beam")
 
     alerts = get_grafana_alerts()
     open_issues = repo.get_issues(state="open", labels=["flaky_test"])
