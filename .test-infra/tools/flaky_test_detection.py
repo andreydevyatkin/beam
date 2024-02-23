@@ -20,7 +20,7 @@ from github import Github
 from github import Auth
 
 
-GIT_ORG = "apache"
+GIT_ORG = "andreydevyatkin"
 GRAFANA_URL = "https://tempgrafana.volatilemolotov.com"
 ALERT_NAME = "flaky_test_dev"
 READ_ONLY = os.environ.get("READ_ONLY", "false")
