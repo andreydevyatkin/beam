@@ -33,7 +33,7 @@ env:
   READ_ONLY: ${{ inputs.READ_ONLY }}
 jobs:
   flaky-test-detection:
-    runs-on: [self-hosted, X64, macOS]
+    runs-on: [self-hosted, ubuntu-20.04, main]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
