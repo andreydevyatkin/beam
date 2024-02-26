@@ -38,24 +38,24 @@ class Alert:
         self.workflow_id = workflow_id
         self.workflow_url = workflow_url
         self.workflow_name = workflow_name
-        self.workflow_file_name = workflow_filename
+        self.workflow_filename = workflow_filename
         self.workflow_threshold = round(float(workflow_threshold), 2)
 
 
-def extract_workflow_id_from_issue_label(issues):
-    label_ids = []
+def get_workflow_id_from_issue(issues):
+    workflow_ids = []
     for issue in issues:
         for label in issue.get_labels():
             match = re.search(r"workflow_id:\s*(\d+)", str(label.name))
             if match:
-                label_id = match.group(1)
-                label_ids.append(label_id)
+                workflow_id = match.group(1)
+                workflow_ids.append(workflow_id)
 
-    return label_ids
+    return workflow_ids
 
 
 def create_github_issue(repo, alert):
-    failing_runs_url = f"https://github.com/{GIT_ORG}/beam/actions/{alert.workflow_file_name}?query=is%3Afailure+branch%3Amaster"
+    failing_runs_url = f"https://github.com/{GIT_ORG}/beam/actions/{alert.workflow_filename}?query=is%3Afailure+branch%3Amaster"
     title = f"The {alert.workflow_name} job is flaky"
     body = f"The {alert.workflow_name } is failing over {int(alert.workflow_threshold * 100)}% of the time \nPlease visit {failing_runs_url} to see the logs."
     labels = ["flaky_test", f"workflow_id: {alert.workflow_id}", "bug", "P1"]
@@ -106,13 +106,17 @@ def main():
 
     alerts = get_grafana_alerts()
     open_issues = repo.get_issues(state="open", labels=["flaky_test"])
-    workflow_ids = extract_workflow_id_from_issue_label(open_issues)
+    closed_issues = repo.get_issues(state="closed", labels=["flaky_test"])
+    workflow_ids_from_open_issues = get_workflow_id_from_issue(open_issues)
+    workflow_ids_from_closed_issues = get_workflow_id_from_issue(closed_issues)
     for alert in alerts:
-        if alert.workflow_id not in workflow_ids:
+        if alert.workflow_id in workflow_ids_from_closed_issues:
+            issue = next(filter(lambda i: f"workflow_id: {alert.workflow_id}" in i.labels, closed_issues))
+            issue.edit(state="open")
+        elif alert.workflow_id not in workflow_ids_from_open_issues:
             create_github_issue(repo, alert)
-            workflow_ids.append(alert.workflow_id)
         else:
-            print("Issue already exists, skipping")
+            print("Issue is already open, skipping")
 
     g.close()
 
