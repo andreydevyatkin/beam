@@ -111,8 +111,9 @@ def main():
     workflow_ids_from_closed_issues = get_workflow_id_from_issue(closed_issues)
     for alert in alerts:
         if alert.workflow_id in workflow_ids_from_closed_issues:
-            issue = next(filter(lambda i: f"workflow_id: {alert.workflow_id}" in i.labels, closed_issues))
-            issue.edit(state="open")
+            issue = next(filter(lambda i: f"workflow_id: {alert.workflow_id}" in i.labels, closed_issues), None)
+            if issue:
+                issue.edit(state="open")
         elif alert.workflow_id not in workflow_ids_from_open_issues:
             create_github_issue(repo, alert)
         else:
