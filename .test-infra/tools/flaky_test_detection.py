@@ -42,16 +42,16 @@ class Alert:
         self.workflow_threshold = round(float(workflow_threshold), 2)
 
 
-def get_workflow_id_from_issue(issues):
-    workflow_ids = []
+def get_workflow_issues(issues):
+    workflows = {}
     for issue in issues:
         for label in issue.get_labels():
             match = re.search(r"workflow_id:\s*(\d+)", str(label.name))
             if match:
                 workflow_id = match.group(1)
-                workflow_ids.append(workflow_id)
+                workflows[workflow_id] = issue
 
-    return workflow_ids
+    return workflows
 
 
 def create_github_issue(repo, alert):
@@ -107,16 +107,16 @@ def main():
     alerts = get_grafana_alerts()
     open_issues = repo.get_issues(state="open", labels=["flaky_test"])
     closed_issues = repo.get_issues(state="closed", labels=["flaky_test"])
-    workflow_ids_from_open_issues = get_workflow_id_from_issue(open_issues)
-    workflow_ids_from_closed_issues = get_workflow_id_from_issue(closed_issues)
+    workflow_open_issues = get_workflow_issues(open_issues)
+    workflow_closed_issues = get_workflow_issues(closed_issues)
     for alert in alerts:
-        if alert.workflow_id in workflow_ids_from_closed_issues:
+        if alert.workflow_id in workflow_closed_issues.keys():
             print(f"Found a closed issue for the workflow: {alert.workflow_id}, reopening")
-            issue = next(filter(lambda i: f"workflow_id: {alert.workflow_id}" in i.labels, closed_issues), None)
+            issue = workflow_closed_issues[alert.workflow_id]
             if issue:
                 issue.edit(state="open")
                 print(f"The issue for the workflow {alert.workflow_id} has been reopened")
-        elif alert.workflow_id not in workflow_ids_from_open_issues:
+        elif alert.workflow_id not in workflow_open_issues.keys():
             create_github_issue(repo, alert)
         else:
             print("Issue is already open, skipping")
