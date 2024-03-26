@@ -16,14 +16,15 @@
 import os
 import re
 import requests
+from datetime import datetime
 from github import Github
 from github import Auth
 
 
+ALERT_NAME = "flaky_test_dev"
 GIT_ORG = "andreydevyatkin"
 GRAFANA_URL = "https://tempgrafana.volatilemolotov.com"
-ALERT_NAME = "flaky_test_dev"
-READ_ONLY = os.environ.get("READ_ONLY", "false")
+READ_ONLY = os.environ.get("READ_ONLY", "true")
 
 
 class Alert:
@@ -34,12 +35,14 @@ class Alert:
         workflow_name,
         workflow_filename,
         workflow_threshold,
+        workflow_retrieved_at,
     ):
         self.workflow_id = workflow_id
         self.workflow_url = workflow_url
         self.workflow_name = workflow_name
         self.workflow_filename = workflow_filename
         self.workflow_threshold = round(float(workflow_threshold), 2)
+        self.workflow_retrieved_at = workflow_retrieved_at
 
 
 def get_workflow_issues(issues):
@@ -89,6 +92,7 @@ def get_grafana_alerts():
                     alert["labels"]["workflow_name"],
                     alert["labels"]["workflow_filename"],
                     alert["labels"]["workflow_threshold"],
+                    datetime.strptime(alert["labels"]["workflow_retrieved_at"], "%Y-%m-%dT%H:%M:%SZ"),
                 )
             )
     return alerts
@@ -111,15 +115,19 @@ def main():
     workflow_closed_issues = get_workflow_issues(closed_issues)
     for alert in alerts:
         if alert.workflow_id in workflow_closed_issues.keys():
-            print(f"Found a closed issue for the workflow: {alert.workflow_id}, reopening")
             issue = workflow_closed_issues[alert.workflow_id]
-            if issue:
+            if READ_ONLY == "true":
+                print("READ_ONLY is true, not reopening issue")
+            elif issue.closed_at > alert.workflow_retrieved_at:
+                print(f"The issue for the workflow {alert.workflow_id} has been closed, skipping")
+            else:
                 issue.edit(state="open")
+                issue.create_comment(body="Reopening since the workflow is still flaky")
                 print(f"The issue for the workflow {alert.workflow_id} has been reopened")
         elif alert.workflow_id not in workflow_open_issues.keys():
             create_github_issue(repo, alert)
         else:
-            print("Issue is already open, skipping")
+            print(f"The issue for the workflow {alert.workflow_id} is already open, skipping")
 
     g.close()
 
