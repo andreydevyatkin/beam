@@ -120,6 +120,8 @@ def main():
     for alert in alerts:
         if alert.workflow_id in workflow_closed_issues.keys():
             issue = workflow_closed_issues[alert.workflow_id]
+            print(issue.closed_at)
+            print(alert.workflow_retrieved_at)
             if READ_ONLY == "true":
                 print("READ_ONLY is true, not reopening issue")
             elif issue.closed_at > alert.workflow_retrieved_at:
