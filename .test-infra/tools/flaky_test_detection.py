@@ -85,10 +85,6 @@ def get_grafana_alerts():
     alerts = []
     if response.text:
         for alert in response.json():
-            workflow_retrieved_at = datetime.strftime(
-                datetime.fromisoformat(alert["labels"]["workflow_retrieved_at"]),
-                "%Y-%m-%dT%H:%M:%SZ"
-            )
             alerts.append(
                 Alert(
                     alert["labels"]["workflow_id"],
@@ -96,7 +92,7 @@ def get_grafana_alerts():
                     alert["labels"]["workflow_name"],
                     alert["labels"]["workflow_filename"],
                     alert["labels"]["workflow_threshold"],
-                    datetime.strptime(workflow_retrieved_at, "%Y-%m-%dT%H:%M:%SZ"),
+                    datetime.fromisoformat(alert["labels"]["workflow_retrieved_at"]),
                 )
             )
     return alerts
